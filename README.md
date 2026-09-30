@@ -29,57 +29,41 @@
 
 ## 安装
 
-**环境**：脚本只用 Python 标准库，没有第三方依赖（只有可选的封面文字卡脚本 `make_cover_card.py` 需要 Pillow）（我在 Python 3.14 上测试过，更低版本没验证）。所有脚本都会把输出固定成 UTF-8，不需要再设环境变量。
-
-先克隆到本地，**目录名要叫 `wxstyle`**（和 `SKILL.md` 里的 `name` 一致）：
+Python 3.10+，标准库即可（可选的封面文字卡脚本 `make_cover_card.py` 需要 Pillow）。
 
 ```bash
-git clone https://github.com/zhangl93/wxstyle-skill.git wxstyle
+git clone https://github.com/zhangl93/wxstyle-skill.git ~/.claude/skills/wxstyle
 ```
 
-### 方式一：Claude Code / Claude 桌面应用的 Code 标签页（推荐）
+只想在某个项目里用，克隆到该项目的 `.claude/skills/wxstyle` 即可。装好后新开一个会话，技能列表里应该能看到 `wxstyle`，或者直接说一句"wxstyle-list"试一下。
 
-把 skill 目录链接到个人技能目录，所有项目都能用。用链接而不是复制，画像和原文缓存就只有一份，改了不会两边不一致。把下面的 `<克隆路径>` 换成你克隆到的实际路径：
+<details>
+<summary>其他安装方式：克隆到别处再链接 / 打包成 .skill 上传 Claude.ai</summary>
 
+**克隆到别处，用符号链接接入**（画像和原文缓存只留一份，改了不会两边不一致）：
+
+```bash
+# macOS / Linux
+ln -s <克隆路径>/wxstyle ~/.claude/skills/wxstyle
+```
 ```powershell
+# Windows
 New-Item -ItemType Junction -Path "$env:USERPROFILE\.claude\skills\wxstyle" -Target "<克隆路径>\wxstyle"
 ```
 
-macOS / Linux 用软链接：
+卸载就删链接本身（`rm ~/.claude/skills/wxstyle`，或 `rmdir` 对应的 Junction），不会动源目录。
 
-```bash
-ln -s <克隆路径>/wxstyle ~/.claude/skills/wxstyle
-```
-
-只想在某个项目里用，就把目标换成该项目的 `.claude/skills/wxstyle`。
-
-装好后**新开一个会话**，在技能列表里应该能看到 `wxstyle`；也可以直接说"wxstyle-list"试一下。这个加载机制没有在所有环境里验证过，如果没出现，先确认目录名和链接路径是否正确。
-
-想取消，删掉这个链接即可：
-
-```bash
-rm ~/.claude/skills/wxstyle
-```
-
-只删链接本身，不会动克隆下来的源目录（`rm` 对着一个链接/Junction 生效，不带 `-r` 就不会递归进目标目录）。Windows 下对应用 `rmdir "%USERPROFILE%\.claude\skills\wxstyle"`（不要用 `rd /s`）。
-
-### 方式二：打包成 `.skill` 上传（Claude.ai 等）
-
-在 skill-creator 的目录下运行它自带的 `package_skill.py`（要在那个目录里执行，才能找到 `scripts` 包）：
+**打包成 `.skill` 上传**（Claude.ai 等）：在 skill-creator 目录下运行它自带的 `package_skill.py`：
 
 ```bash
 python -m scripts.package_skill <克隆路径>/wxstyle <输出目录>
 ```
 
-打包会带上 `profiles/`：
+`profiles/_raw/`（别人文章原文，别分享出去）和 `profiles/self_*.json`（你的个人画像）按需决定是否带上；`evals/` 默认不打包。
 
-- `profiles/_raw/`：对标账号的原文缓存，是别人的文章，别分享出去。相似度检查要用它，但不必随 skill 一起打包。
-- `profiles/self_*.json`：你自己的画像，是个人数据，按需决定是否带上。
-- 文章产出不放在 skill 目录里（默认在项目的 `articles/`，或 skill 同级的 `wxstyle-articles/`），所以不会被打进包。
+</details>
 
-`evals/` 默认不会被打进包里。上传后的环境能不能运行脚本、能不能写回 `profiles/`，取决于那个环境，我没有验证过。
-
-### 装好后自检
+自检：
 
 ```bash
 python -m unittest discover -s evals -p "test_*.py"

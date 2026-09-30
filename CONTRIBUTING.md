@@ -14,6 +14,17 @@ python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 
 这是唯一强制要求：PR 提交前必须全绿。测试内容见 [README「测试」](README.md#测试)一节，包括脚本回归测试、触发评测、行为用例。改了 `scripts/*.py` 里任何一条检查规则，大概率也要同步改 `references/checks.md`——`evals/test_skill_docs_contract.py` 里的 `ClaimCheckRuleDocsSyncTests` / `AiTellRuleDocsSyncTests` 会自动检查两边是不是对得上，忘了同步会直接测试失败，不用自己记。
 
+## 改了版本号，记得打 tag
+
+改了 SKILL.md、references 或脚本行为，`SKILL.md` 的 `metadata.version` 要跟着升（规则见 [CHANGELOG.md](CHANGELOG.md) 开头），CHANGELOG 也要加对应条目。版本号改完，同时打一个同名 git tag（如 `v1.9.2`）并推送：
+
+```bash
+git tag -a v1.9.2 -m "..."
+git push origin v1.9.2
+```
+
+README 顶部的 Version 徽章读的是最新 git tag，不打 tag 徽章就会一直停在旧版本号，跟 `metadata.version` 对不上。
+
 ## 加一条新的检查规则
 
 以 `scripts/claim_check.py` 或 `scripts/ai_tell_check.py` 里加一条新规则为例：

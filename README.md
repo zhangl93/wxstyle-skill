@@ -1,5 +1,9 @@
 # wxstyle
 
+[![Stars](https://img.shields.io/github/stars/zhangl93/wxstyle-skill?style=flat-square)](https://github.com/zhangl93/wxstyle-skill/stargazers)
+[![Version](https://img.shields.io/github/v/tag/zhangl93/wxstyle-skill?label=version&style=flat-square)](CHANGELOG.md)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
+
 一个写微信公众号文章的 [Claude Code Skill](https://docs.claude.com/en/docs/claude-code/skills)（当前版本见 [CHANGELOG.md](CHANGELOG.md)）：先分析对标账号的写法，再结合作者自己的声音写稿，覆盖资料核实、写作、配图、排版和发布前审核。产出是可以粘贴到公众号后台的 Markdown。发布由作者手动完成，不自动发布。
 
 给 Claude 读的说明在 [SKILL.md](skills/wxstyle/SKILL.md)；这份 README 是写给使用者的。许可证见 [LICENSE](LICENSE)（MIT）。产出长什么样，看 [examples/](examples/)。想贡献代码或提 issue，看 [CONTRIBUTING.md](CONTRIBUTING.md)。
@@ -180,3 +184,7 @@ skills/wxstyle/         skill 本体（npx skills add 按这个约定寻找）
 ## 改这个skill时的一条纪律
 
 新想法（写作原则、结构模板）第一次采纳时，先放进已有文档的一节里，用简短的篇幅记录，不新开文件、不展开成大段落。只有真实用过3次以上、确认有用，才值得升级成独立参考文件或详细章节。没用够3次的内容，在文档开头写明"验证次数"，提醒下次用到时先判断是否还适用，而不是在没有新证据前继续加码。这条纪律是2026-09-30审查时定的，当时发现好几份参考文档（机制讲解结构、工具分工、社区素材）都只有0—1次真实验证，却已经写得很详细。
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=zhangl93/wxstyle-skill&type=Date)](https://star-history.com/#zhangl93/wxstyle-skill&Date)

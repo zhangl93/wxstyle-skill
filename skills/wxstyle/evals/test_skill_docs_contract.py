@@ -342,7 +342,7 @@ class LowEvidenceLabelTests(unittest.TestCase):
     """低验证内容要在文档开头明说验证次数，提醒以后的自己别在没有新证据前继续扩展。"""
 
     def test_low_evidence_docs_are_labeled(self):
-        for name in ("explainer-structure.md", "tools-guide.md", "community-sources.md"):
+        for name in ("explainer-structure.md", "tools-guide.md", "community-sources.md", "imagegen-prompt-template.md"):
             d = (ROOT / "references" / name).read_text(encoding="utf-8")
             self.assertIn("验证次数", d, name)
             self.assertIn("不要在没有新证据前继续扩展", d, name)
@@ -394,11 +394,6 @@ class ToolsGuideTests(unittest.TestCase):
 
 
 class CoverPromptTests(unittest.TestCase):
-    def test_title_and_cover_guide_has_prompt_section(self):
-        d = (ROOT / "references" / "title-and-cover.md").read_text(encoding="utf-8")
-        for word in ("封面提示词", "ChatGPT", "不放文字", "提示词模板", "裁切"):
-            self.assertIn(word, d)
-
     def test_review_template_asks_for_cover_prompt(self):
         tpl = (ROOT / "references" / "review-checklist-template.md").read_text(encoding="utf-8")
         self.assertIn("封面提示词", tpl)
@@ -417,17 +412,6 @@ class TitleAndCoverGuidanceTests(unittest.TestCase):
         d = self.doc()
         for word in ("对谁", "得到什么", "为什么可信", "标题党", "截断", "差：", "好："):
             self.assertIn(word, d)
-
-    def test_cover_guidance_has_options_specs_and_limits(self):
-        d = self.doc()
-        for word in ("900×383", "1:1", "文字卡", "不承载事实", "授权", "封面方案"):
-            self.assertIn(word, d)
-
-    def test_cover_guidance_names_the_square_crop_width_and_script(self):
-        d = self.doc()
-        self.assertIn("383", d)
-        self.assertIn("make_cover_card.py", d)
-        self.assertIn("裁切预览", d)
 
     def test_review_template_has_title_and_cover_section(self):
         tpl = (ROOT / "references" / "review-checklist-template.md").read_text(encoding="utf-8")

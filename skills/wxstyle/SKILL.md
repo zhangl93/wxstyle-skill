@@ -41,6 +41,8 @@ metadata:
 6. **机械检查**，命令和读法见[检查脚本说明](references/checks.md)：`ai_tell_check.py`、`similarity_check.py`（有对标原文时）、`claim_check.py --review review.md`、`check_layout.py`。命中逐条复核后再决定改不改。画像里写明的写作习惯（如号召式结尾）会被当成套路命中，用 `ai_tell_check.py --allow 类别` 放行，并在review.md写明放行了什么。
 7. **交付**，按“输出”。
 
+用户要求提高封面点击或验证吸引力时，读取[封面生成与测试](references/cover-testing.md)，区分设计判断、模拟选择与真实随机实验；没有行为数据不宣称高点击。
+
 画像分析按[画像规则](references/style-profile-schema.md)：先看 profiles/ 里有没有同一账号的画像，有就更新，不新建；账号名用公众号后台显示的名称，栏目或周刊归到所属账号（同一号在不同会话里起了不同文件名，会让样本数和去重对不上）；只分析读到的正文，读不到就说原因，不凭账号名编；图片型文章先逐张转写；数字用 `profile_stats.py` 统计；按来源或内容指纹去重，重复样本不加 sample_count；保存后跑 `validate_profile.py`，用 `render_profile_summary.py` 给用户看摘要。己方没有可靠样本时，用几组同题对比句让作者选，标为 bootstrap。未经作者实质改写的AI稿不算己方样本。
 
 配图与排版按[配图规则](references/visual-evidence.md)和[排版规则](references/wechat-layout.md)：真实素材优先，没有就标待补，不用无关图或假界面；每张图逐张看实际画面。

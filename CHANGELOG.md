@@ -2,6 +2,19 @@
 
 版本号写在 SKILL.md 的 `metadata.version`。改了 SKILL.md、references 或脚本行为就升一位：改流程或规则升中间位，只改脚本细节或文档升末位。
 
+## 开源准备（2026-09-30）
+
+这一批不涉及 SKILL.md、references 或脚本行为，`metadata.version` 不变，单独记一节：
+
+- 加 `LICENSE`（MIT）、`.gitignore`（挡住 `profiles/_raw/` 别人文章原文和 `profiles/self_*.json` 个人画像，两者从没进过 git 历史）。
+- `git init` + 建私有 GitHub 仓库 [zhangl93/wxstyle-skill](https://github.com/zhangl93/wxstyle-skill)。
+- README 从"写给自己"改成面向公开使用者：已知限制提到最前面，安装路径从写死的本地路径改成通用命令，加了开源意图说明。
+- 加 `examples/jev-2026-09-21/`：一篇真实文章的完整交付（article.md、review.md、sources.md、delivery.json），故意不带 `images/`——里面一张官方文档截图版权归第三方，不适合公开分发。
+- 加 `CONTRIBUTING.md`：跑测试的要求、加检查规则的4步流程、真实数据验证的教训（引用 1.9.1 的 `titles_from_review` 那次真实bug）。
+- 仓库改成公开。
+- **仓库重构**：把 `SKILL.md`、`scripts/`、`references/`、`profiles/`、`evals/` 挪进 `skills/wxstyle/` 子目录，匹配 [vercel-labs/skills](https://github.com/vercel-labs/skills) 的目录约定，让 `npx skills add zhangl93/wxstyle-skill -a claude-code codex -g -y` 能一条命令装进 Claude Code 和 Codex。README/LICENSE/CONTRIBUTING/CHANGELOG/examples 留在仓库根目录。脚本和测试原本就用 `Path(__file__).resolve().parents[N]` 算路径，整棵子树一起挪不用改代码；只有 `evals/test_docs_links.py` 和 `test_skill_docs_contract.py` 里读 `README.md` 的地方要分清"skill 本体根目录"和"仓库根目录"两个基准点，因为挪动后这两者不再是同一个目录。用 `npx skills add ... -l` 真实跑过，确认能从新结构里正确发现这个 skill。
+- README 加 Stars/Version/License 徽章和 Star History 图表；为了让 Version 徽章有内容，打了个 `v1.9.1` tag 对应当前的 `metadata.version`（以后版本号变了记得同步打 tag）。
+
 ## 1.9.1（2026-09-30）
 
 用真实任务验证1.9.0的文档改动有没有影响行为：让一个子代理用当前skill对已交付的RAG文章跑一次真实的 `wxstyle-review`。1.9.0本身的改动（交叉引用、验证次数标注）没有造成问题，但验证过程中发现一个和1.9.0无关、独立存在的真实bug：

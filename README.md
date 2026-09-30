@@ -2,7 +2,7 @@
 
 一个写微信公众号文章的 [Claude Code Skill](https://docs.claude.com/en/docs/claude-code/skills)（当前版本见 [CHANGELOG.md](CHANGELOG.md)）：先分析对标账号的写法，再结合作者自己的声音写稿，覆盖资料核实、写作、配图、排版和发布前审核。产出是可以粘贴到公众号后台的 Markdown。发布由作者手动完成，不自动发布。
 
-给 Claude 读的说明在 [SKILL.md](SKILL.md)；这份 README 是写给使用者的。许可证见 [LICENSE](LICENSE)（MIT）。
+给 Claude 读的说明在 [SKILL.md](SKILL.md)；这份 README 是写给使用者的。许可证见 [LICENSE](LICENSE)（MIT）。产出长什么样，看 [examples/](examples/)。
 
 这原本是我给自己账号写的私人工具，开源出来是希望对同样在写公众号、又想用 AI 辅助但不想产出"一眼AI味"文章的人有用。它不是通用写作工具，只解决公众号这一个场景的具体问题（画像仿写、事实核验、排版转换、AI味检测），所以下面的"已知限制"建议先看。
 

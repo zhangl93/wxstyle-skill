@@ -1,0 +1,33 @@
+{
+  "article_type": "资料介绍",
+  "text_status": "complete",
+  "visual_status": "complete",
+  "review_status": "complete",
+  "article_sha256": "bc283d4d972b6be3e75149f5132edf992a5ff09470ff5d9eecdf9397bb489fe3",
+  "reviewed_article_sha256": "bc283d4d972b6be3e75149f5132edf992a5ff09470ff5d9eecdf9397bb489fe3",
+  "assets": [
+    {
+      "id": "confidence-demo",
+      "status": "ready",
+      "kind": "official_screenshot",
+      "path": "images/01-official-confidence-demo.png",
+      "source_url": "https://docs.typesafe.ai/confidence",
+      "purpose": "展示概率分布与把握程度的关系（90%/6%/4%对应0.85），支撑“把握程度”一段",
+      "note": "2026-09-21 截取，已查看实图，数字清晰；英文界面，图注附中文对照"
+    },
+    {
+      "id": "cover",
+      "status": "ready",
+      "kind": "text_card",
+      "path": "images/02-cover.png",
+      "purpose": "公众号封面文字卡：大字“85%”加“官方示例”，数字来自官方文档 Quick start 示例（技术类概率0.85），不是作者实测",
+      "note": "2026-09-28 用 scripts/make_cover_card.py 生成，900×383，已看过原图和中间1:1裁切预览（字未被切）；无第三方素材，无授权问题；手机缩略图是否清楚要作者预览确认"
+    }
+  ],
+  "pending_items": [
+    "发布时在后台插入图片、上传封面，手机预览确认",
+    "官方截图使用授权由作者决定",
+    "控制台注册流程今天403打不开，未核实是否仍需候补",
+    "确认这是本选题第三次动笔中要发布的那一版，其余版本是否下线"
+  ]
+}

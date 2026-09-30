@@ -21,6 +21,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[3]  # README.md 在仓库根，skill 本体在 skills/wxstyle/ 下
 sys.path.insert(0, str(ROOT / "scripts"))
 import validate_profile as vp  # noqa: E402
 
@@ -178,7 +179,7 @@ class EngagementGuidanceTests(unittest.TestCase):
         self.assertIn("## 留言问题", tpl)
 
     def test_guidance_is_linked_from_readme(self):
-        self.assertIn("engagement", (ROOT / "README.md").read_text(encoding="utf-8"))
+        self.assertIn("engagement", (REPO_ROOT / "README.md").read_text(encoding="utf-8"))
 
 
 class StructuralPriorityTests(unittest.TestCase):
@@ -384,7 +385,7 @@ class ToolsGuideTests(unittest.TestCase):
 
     def test_linked_from_skill_and_readme(self):
         self.assertIn("references/tools-guide.md", skill_md())
-        self.assertIn("tools-guide", (ROOT / "README.md").read_text(encoding="utf-8"))
+        self.assertIn("tools-guide", (REPO_ROOT / "README.md").read_text(encoding="utf-8"))
 
     def test_covers_the_three_tools_and_is_honest_about_verification(self):
         d = self.doc()

@@ -3,24 +3,32 @@ import re
 import unittest
 from pathlib import Path
 
+# 仓库布局：<repo>/README.md 等给人看的文档在根目录，skill 本体在 skills/wxstyle/ 下
+# （方便 `npx skills add` 这类跨 agent 安装工具按约定找到它）。ROOT 指 skill 本体，
+# REPO_ROOT 指仓库根——两者分开是因为 README.md 引用 SKILL.md 等文件时，
+# 路径要从 REPO_ROOT 算，而 SKILL.md 引用 references/ 时路径要从 ROOT 算。
 ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 class DocsTests(unittest.TestCase):
-    def read(self, name):
-        return (ROOT / name).read_text(encoding="utf-8")
+    def read(self, name, root=ROOT):
+        return (root / name).read_text(encoding="utf-8")
 
     def test_markdown_links_in_docs_resolve(self):
-        for doc in ["SKILL.md", "README.md", *[f"references/{p.name}" for p in (ROOT / "references").glob("*.md")]]:
-            base = (ROOT / doc).parent
-            for target in re.findall(r"\]\(([^)#\s]+\.md)\)", self.read(doc)):
+        docs_with_root = [("skills/wxstyle/SKILL.md", REPO_ROOT), ("README.md", REPO_ROOT)]
+        docs_with_root += [(f"references/{p.name}", ROOT) for p in (ROOT / "references").glob("*.md")]
+        for doc, root in docs_with_root:
+            base = (root / doc).parent
+            for target in re.findall(r"\]\(([^)#\s]+\.md)\)", self.read(doc, root)):
                 if target.startswith("http"):
                     continue
                 self.assertTrue((base / target).exists(), f"{doc} 链接到不存在的 {target}")
 
     def test_scripts_named_in_docs_exist(self):
-        for doc in ["SKILL.md", "README.md"]:
-            for script in set(re.findall(r"scripts/([a-z_]+\.py)", self.read(doc))) | set(re.findall(r"`([a-z_]+\.py)`", self.read(doc))):
+        for doc, root in [("skills/wxstyle/SKILL.md", REPO_ROOT), ("README.md", REPO_ROOT)]:
+            text = self.read(doc, root)
+            for script in set(re.findall(r"scripts/([a-z_]+\.py)", text)) | set(re.findall(r"`([a-z_]+\.py)`", text)):
                 if script.startswith("package_") or script in ("run_loop.py",):
                     continue
                 self.assertTrue((ROOT / "scripts" / script).exists(), f"{doc} 提到不存在的脚本 {script}")

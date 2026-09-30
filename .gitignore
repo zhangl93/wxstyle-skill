@@ -1,8 +1,8 @@
 # 对标账号的原文全文缓存：别人的文章，不能公开分发
-profiles/_raw/
+skills/wxstyle/profiles/_raw/
 
 # 自己账号的画像：包含选题历史等个人数据，默认不公开
-profiles/self_*.json
+skills/wxstyle/profiles/self_*.json
 
 # 文章产出（默认生成在 skill 同级目录，理论上不会落进这里，加一条保险）
 /wxstyle-articles/

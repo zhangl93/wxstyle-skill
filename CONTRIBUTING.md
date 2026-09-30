@@ -4,12 +4,12 @@
 
 ## 改之前
 
-先读 [README.md](README.md) 和 [SKILL.md](SKILL.md)，了解这个 skill 解决什么问题、不解决什么问题（"已知限制"那节）。`references/` 里的文档是给 Claude 读的，不是给人看的架构说明，但改脚本时通常也要跟着改对应的 reference 文档。
+先读 [README.md](README.md) 和 [SKILL.md](skills/wxstyle/SKILL.md)，了解这个 skill 解决什么问题、不解决什么问题（"已知限制"那节）。skill 本体在 `skills/wxstyle/` 下（这个布局是为了让 [`npx skills add`](https://github.com/vercel-labs/skills) 这类跨 agent 安装工具能找到它），仓库根目录只放给人看的文档。`references/` 里的文档是给 Claude 读的，不是给人看的架构说明，但改脚本时通常也要跟着改对应的 reference 文档。
 
 ## 跑测试
 
 ```bash
-python -m unittest discover -s evals -p "test_*.py"
+python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 ```
 
 这是唯一强制要求：PR 提交前必须全绿。测试内容见 [README「测试」](README.md#测试)一节，包括脚本回归测试、触发评测、行为用例。改了 `scripts/*.py` 里任何一条检查规则，大概率也要同步改 `references/checks.md`——`evals/test_skill_docs_contract.py` 里的 `ClaimCheckRuleDocsSyncTests` / `AiTellRuleDocsSyncTests` 会自动检查两边是不是对得上，忘了同步会直接测试失败，不用自己记。

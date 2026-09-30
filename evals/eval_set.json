@@ -1,0 +1,162 @@
+[
+ {
+  "query": "我经营着一个自媒体账号，想模仿一下卡兹克的文风写篇AI测评",
+  "should_trigger": true
+ },
+ {
+  "query": "帮我分析一下量子位这个公众号的写作风格，我想学着写",
+  "should_trigger": true
+ },
+ {
+  "query": "我想仿写一篇像归藏的AI工具箱那种风格的文章，主题是Kimi的新功能，链接我等下发你",
+  "should_trigger": true
+ },
+ {
+  "query": "我的公众号叫摸鱼日记，最近想学一下半佛仙人的文风写篇年终总结",
+  "should_trigger": true
+ },
+ {
+  "query": "帮我给这篇公众号文章配几张图，风格要扁平插画那种，别用真实人物照片",
+  "should_trigger": true
+ },
+ {
+  "query": "wxstyle-list",
+  "should_trigger": true
+ },
+ {
+  "query": "我想靠写公众号赚点钱，但不知道怎么写出爆款，能不能帮我先参考几个号研究一下套路",
+  "should_trigger": true
+ },
+ {
+  "query": "这篇稿子发之前帮我做个合规自检，主要是查有没有跟对标账号抄太像",
+  "should_trigger": true
+ },
+ {
+  "query": "我看到一个很火的公众号写法很有意思，能不能帮我拆解一下它的套路，然后照着这个套路写一篇差不多主题的",
+  "should_trigger": true
+ },
+ {
+  "query": "帮我把这篇公众号文章排个版，转成能直接粘贴发布的格式",
+  "should_trigger": true
+ },
+ {
+  "query": "帮我写一篇关于AI发展趋势的文章，1500字左右就行",
+  "should_trigger": false
+ },
+ {
+  "query": "帮我检查一下这段Python代码有没有安全漏洞",
+  "should_trigger": false
+ },
+ {
+  "query": "帮我总结一下这篇公众号文章讲了什么，200字以内",
+  "should_trigger": false
+ },
+ {
+  "query": "我想做一个企业官网的落地页设计，风格要现代简约",
+  "should_trigger": false
+ },
+ {
+  "query": "帮我看看这篇小红书笔记怎么写更吸引人，字数少一点",
+  "should_trigger": false
+ },
+ {
+  "query": "我想学习一下鲁迅的写作手法，写一篇关于故乡的短篇小说",
+  "should_trigger": false
+ },
+ {
+  "query": "帮我写一份本周的工作周报，语气正式一点，发给我老板",
+  "should_trigger": false
+ },
+ {
+  "query": "这个PPT的配色方案能不能帮我参考一下@设计师小美 的风格",
+  "should_trigger": false
+ },
+ {
+  "query": "根据这份Q3销售数据.xlsx，生成几张柱状图用于季度汇报",
+  "should_trigger": false
+ },
+ {
+  "query": "帮我把这个README.md文件转换成HTML网页",
+  "should_trigger": false
+ },
+ {
+  "query": "写一篇 TypeSafe Jev 的公众号介绍文章，资料是他们官方文档，我自己还没实测过",
+  "should_trigger": true
+ },
+ {
+  "query": "我这篇公众号稿子里有不少AI味的句式，帮我查一遍，再看看有没有写得太夸张的地方",
+  "should_trigger": true
+ },
+ {
+  "query": "我的公众号专写AI工具，下一篇要写 Cadence，帮我出几个标题和一段摘要",
+  "should_trigger": true
+ },
+ {
+  "query": "这是我公众号最近三篇文章，帮我提炼一下我自己的写作风格存成画像",
+  "should_trigger": true
+ },
+ {
+  "query": "公众号文章发布前，帮我核对文中的数字和引用来源，并在文末标注出处",
+  "should_trigger": true
+ },
+ {
+  "query": "我这篇推文里有两条评论截图，帮我整理成“社区里的真实测试”一节放进公众号文章",
+  "should_trigger": true
+ },
+ {
+  "query": "帮我写一篇技术博客介绍 Jev，发到公司内部 wiki 给开发同事看",
+  "should_trigger": false
+ },
+ {
+  "query": "把 Jev 官方文档的 Quick start 翻译成中文，保留代码块",
+  "should_trigger": false
+ },
+ {
+  "query": "帮我润色这封发给客户的邮件，语气专业一点，别太像AI写的",
+  "should_trigger": false
+ },
+ {
+  "query": "帮我给这款笔记软件写一条小红书文案，带几个话题标签",
+  "should_trigger": false
+ },
+ {
+  "query": "帮我写篇推送，讲讲 Cursor 最近出的后台 Agent，周五要发号",
+  "should_trigger": true
+ },
+ {
+  "query": "公号稿帮我改改，读着太像AI了，稿子在 draft.md",
+  "should_trigger": true
+ },
+ {
+  "query": "我们号下周要发一篇介绍 Jev 的文章，你先帮我出个初稿",
+  "should_trigger": true
+ },
+ {
+  "query": "这篇要发公众号的文章，帮我查查里面的数据对不对",
+  "should_trigger": true
+ },
+ {
+  "query": "给我下周的公众号文章起5个标题，主题是 AI 记账工具",
+  "should_trigger": true
+ },
+ {
+  "query": "写一篇公众号文章介绍 Notion 的新 AI 功能",
+  "should_trigger": true
+ },
+ {
+  "query": "帮我写一条英文推文发到 X 上，宣传我们的新功能",
+  "should_trigger": false
+ },
+ {
+  "query": "帮我写一篇知乎回答：普通人怎么用 AI 提升效率",
+  "should_trigger": false
+ },
+ {
+  "query": "把这篇公众号文章总结成三句话给我老板看",
+  "should_trigger": false
+ },
+ {
+  "query": "帮我写一份产品发布会的演讲稿，下周三用",
+  "should_trigger": false
+ }
+]

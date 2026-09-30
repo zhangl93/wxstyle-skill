@@ -1,0 +1,74 @@
+{
+  "profile_type": "target",
+  "account_name": "归藏的AI工具箱",
+  "confidence": "low",
+  "sample_count": 1,
+  "last_updated": "2026-09-20",
+  "recent_topics": [
+    "AI 互动游戏的 GPT 时刻到了！谷歌Genie 3首测！太牛了！"
+  ],
+  "title": {
+    "formulas": [
+      "大事件宣告+具体产品名+'首测'定位+情绪化感叹收尾，如'{大事件}！{产品名}首测！太牛了！'"
+    ],
+    "avg_length": 24,
+    "uses_emoji": false
+  },
+  "opening": {
+    "hook_types": [
+      "背景速览+第一人称立即上手（'X刚出/刚开放，藏师傅赶紧去试了一下'）",
+      "开局先甩结论/大胆预测抓眼球，再解释为什么这么说"
+    ]
+  },
+  "paragraph_rhythm": {
+    "avg_paragraph_length": 15,
+    "short_long_ratio": "9:1",
+    "max_sentence_length": 35,
+    "note": "几乎每句单独成段，是这篇最明显的排版特征；不是没话说，是刻意切成短句制造阅读节奏，读起来像连续的口播/弹幕"
+  },
+  "tone": {
+    "person": "第一人称，用自封的人设化称呼'藏师傅'自称，不是单纯说'我'",
+    "colloquial_level": 5,
+    "signature_phrases": [
+      "藏师傅",
+      "太牛了",
+      "牛批",
+      "结果我去",
+      "口说无凭"
+    ]
+  },
+  "rhetoric": {
+    "parallelism_freq": "低（不太用排比列举理由，靠流水账式实测叙述推进）",
+    "rhetorical_question_freq": "低",
+    "analogy_freq": "低（几乎不打比方，直接描述亲身体验）"
+  },
+  "argumentation": {
+    "story_pct": 60,
+    "data_pct": 20,
+    "case_pct": 20,
+    "note": "story=三段具体的实测场景流水账（史前恐龙/毛毡蜗牛/伊斯坦布尔猫），这是全文主体；data=开头的5点特征速览；后半段还有一大块'操作步骤教程'，schema目前没有单独的how-to占比字段，这类工具实测号可能需要在argumentation之外补一个教程占比才够用，先记在note里"
+  },
+  "ending": {
+    "style": "轻量CTA，无过渡直接收尾：一句'如果觉得对你有帮助的话，欢迎帮我点个赞，或者转发给你需要的朋友！'，不升华不总结"
+  },
+  "visual_rhythm": {
+    "avg_chars_per_visual_pause": 180,
+    "note": "实测教程类文章视觉密度高，每个测试步骤/操作说明基本都配图或截图，明显比资讯评论类账号（比如阮一峰周刊）密集"
+  },
+  "layout_details": {
+    "uses_divider": false,
+    "bold_keyword_freq": "低（几乎不加粗，靠短句独立成行制造视觉节奏，不靠加粗关键词）",
+    "has_engagement_prompt": true
+  },
+  "self_only_fields": {},
+  "observation_basis": {
+    "sample_count": 1,
+    "scope": "当前缓存样本内的暂定观察",
+    "limitation": "样本少，固定/通常等历史描述仅限样本；不是写作命令"
+  },
+  "non_transferable_identity": [
+    "藏师傅自称",
+    "原作者固定口头禅",
+    "首测经历及其个人案例"
+  ]
+}

@@ -160,7 +160,7 @@ skills/wxstyle/profiles/
 ## 测试
 
 ```bash
-python -m unittest discover -s skills/wxstyle/evals -p “test_*.py”
+python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 ```
 
 - `evals/test_*.py`：脚本的回归测试。

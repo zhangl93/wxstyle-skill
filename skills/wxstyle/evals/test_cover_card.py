@@ -51,6 +51,13 @@ class CoverCardTests(unittest.TestCase):
             code, data = run("--big", "85%", "--small", "这是官方文档里的一个示例数字", "--out", str(Path(d) / "c.png"))
             self.assertEqual(code, 2)
 
+    def test_explicit_missing_font_is_reported_not_replaced(self):
+        with tempfile.TemporaryDirectory() as d:
+            missing = str(Path(d) / "no-such-font.ttc")
+            code, data = run("--big", "85%", "--font-bold", missing, "--out", str(Path(d) / "c.png"))
+            self.assertEqual(code, 2)
+            self.assertIn(missing, data["error"])
+
 
 @unittest.skipUnless(HAVE_PIL, "需要 Pillow")
 class CoverBackgroundTests(unittest.TestCase):

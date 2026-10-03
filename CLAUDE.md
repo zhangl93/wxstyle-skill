@@ -27,7 +27,7 @@ cd skills/wxstyle/evals && python -m unittest test_skill_docs_contract.AiTellRul
 python skills/wxstyle/evals/fixture_benchmark/run.py
 ```
 
-Known environment quirk: `make_cover_card.py` defaults to the Windows font `C:\Windows\Fonts\msyhbd.ttc`, so the two `test_cover_card` tests fail (exit 2, "找不到字体") on macOS/Linux unless a font is passed with `--font-bold` / `--font`.
+`make_cover_card.py` picks a Simplified Chinese font per OS from `BOLD_CANDIDATES` / `REGULAR_CANDIDATES`, which pair each path with a `.ttc` face index (some collections put Traditional Chinese or Japanese at index 0). If no candidate exists it exits 2; pass `--font-bold` / `--font` (face index 0) to override.
 
 Script usage (flags, how to read the output) is documented in the README script table and in `references/checks.md`. All scripts print JSON and take file paths as passed, relative to the cwd. Only the tests and `fixture_benchmark/run.py` locate the skill through `Path(__file__).resolve().parents[N]`.
 

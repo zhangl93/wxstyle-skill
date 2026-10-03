@@ -2,6 +2,12 @@
 
 版本号写在 SKILL.md 的 `metadata.version`。改了 SKILL.md、references 或脚本行为就升一位：改流程或规则升中间位，只改脚本细节或文档升末位。
 
+## 1.9.2（2026-10-03）
+
+- **`make_cover_card.py` 在 macOS 和 Linux 上跑不起来**：默认字体写死成 Windows 的 `C:\Windows\Fonts\msyhbd.ttc`，别的系统一律报“找不到字体”退出，`test_cover_card` 的两个测试在 Mac 上也一直是红的。现在按系统依次找：Windows 微软雅黑，macOS 冬青黑体（Hiragino Sans GB），Linux Noto Sans CJK 或文泉驿正黑；都找不到才报错，并列出试过的路径。`--font-bold` / `--font` 照旧可以手动指定，指定的文件不存在时直接报错，不偷偷换成别的字体。
+- 候选字体带上了 `.ttc` 里的字形序号。原因是第一版直接选了 macOS 的华文黑体 STHeiti，渲染出来才发现它的序号 0 是繁体（Heiti TC），Noto Sans CJK 的序号 0 是日文。所以 macOS 改用冬青黑体（W6 粗体用序号 2），Noto 用序号 2（简体）。
+- 新增测试：手动指定的字体不存在时，要报错并带上那个路径。
+
 ## 开源准备（2026-09-30）
 
 这一批不涉及 SKILL.md、references 或脚本行为，`metadata.version` 不变，单独记一节：

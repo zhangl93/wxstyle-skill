@@ -80,4 +80,4 @@ python scripts/claim_check.py --file <正文> [--hands-on] [--review <review.md>
 
 ## 封面
 
-- `python scripts/make_cover_card.py --big 85% --small 官方示例 --out images/02-cover.png`：生成封面文字卡（900×383），输出中间 1:1 的裁切预览。`--bg 图片路径` 把 ChatGPT 等生成的无字插画居中裁成封面尺寸，可再叠字。封面字合计超过10个、大字放不进安全区会报错。需要 Pillow（`pip install pillow`），其余脚本不需要；字体默认用 Windows 的微软雅黑，其他系统用 `--font-bold`、`--font` 指定。生成后要看图，尤其是裁切预览。
+- `python scripts/make_cover_card.py --big 85% --small 官方示例 --out images/02-cover.png`：生成封面文字卡（900×383），输出中间 1:1 的裁切预览。`--bg 图片路径` 把 ChatGPT 等生成的无字插画居中裁成封面尺寸，可再叠字。封面字合计超过10个、大字放不进安全区会报错。需要 Pillow（`pip install pillow`），其余脚本不需要；字体按系统自动找（Windows 微软雅黑、macOS 冬青黑体、Linux Noto Sans CJK 或文泉驿正黑），都找不到时用 `--font-bold`、`--font` 指定。生成后要看图，尤其是裁切预览。

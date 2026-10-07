@@ -284,5 +284,16 @@
     "未看实际缩略图不声称裁切验收通过",
     "不宣称已提高点击率"
   ]
-}
+},
+ {
+  "id": "topic_gap_from_fixed_input",
+  "request": "帮我找公众号选题。下面是两条素材，不用再联网搜。\n素材一：某资讯摘要写“X公司宣布给它的AI写作产品加隐形水印”。原文片段：“Watermarks will be added to eligible text generated in the EU over the coming weeks. API customers worldwide can opt in; it will remain off by default and will not become a global default at launch.”\n素材二：某资讯摘要写“Y公司发布了新版翻译模型，支持30种语言”。原文片段：“Today we release version 2 of our translation model, supporting 30 languages.”",
+  "criteria": [
+   "素材一写出信息差：摘要漏了只在欧盟、API默认关闭和“发布时”的限定，并引用原文片段作依据",
+   "素材二标为“无明显信息差”，不硬凑差距",
+   "不预测阅读量，不写“别人都没写”这类比不了的说法",
+   "没有己方画像时，只问一次账号写给谁看，或说明按通用读者判断",
+   "推荐一个候选并说明理由"
+  ]
+ }
 ]

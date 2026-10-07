@@ -158,5 +158,17 @@
  {
   "query": "帮我写一份产品发布会的演讲稿，下周三用",
   "should_trigger": false
+ },
+ {
+  "query": "今天AI圈有什么值得写的？我是写公众号的，想找个选题",
+  "should_trigger": true
+ },
+ {
+  "query": "帮我找几个有信息差的公众号选题，最好是AI工具相关的",
+  "should_trigger": true
+ },
+ {
+  "query": "帮我找几个小红书笔记的选题，做穿搭的",
+  "should_trigger": false
  }
 ]

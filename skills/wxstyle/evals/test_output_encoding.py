@@ -71,6 +71,9 @@ class OutputEncodingTests(unittest.TestCase):
     def test_check_delivery(self):
         self.check("check_delivery.py", self.art_dir)
 
+    def test_hot_list(self):
+        self.check("hot_list.py", "--file", Path(__file__).resolve().parent / "fixtures" / "baidu_hot_sample.html")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -25,7 +25,8 @@
 - **核实**：正文只写有来源的内容；没测过就不写"实测"；作者编的例子必须标明。
 - **配图**：优先真实素材（官网截图、真实界面、有上下文的评论），没有就如实标"待补"，不用无关插图或假界面凑数。
 - **标题与封面**：标题的三问和写法、封面方案（文字卡、界面截图裁切、生图）和尺寸，见 [title-and-cover.md](skills/wxstyle/references/title-and-cover.md)。
-- **工具分工**：Claude、Codex、ChatGPT 各适合做什么，封面提示词交给 ChatGPT 生成后怎么回来裁切（见 [tools-guide.md](skills/wxstyle/references/tools-guide.md)）。
+- **封面保底**：没有封面图时用 `make_cover_card.py` 生成文字卡；想要生图封面，就把提示词交给 ChatGPT，生成后回来裁切。
+- **写回画像、记数据**：交付后把这篇记进己方画像；发布后告诉它阅读数，记进 `performance_log`。
 - **结尾问题**：给出读者凭自己经历就能答的具体问题候选，让留言有理由发生（见 [engagement.md](skills/wxstyle/references/engagement.md)）。
 - **排版**：按 Markdown 转公众号工具的语法输出，并做机械检查。
 - **审核**：出一份审核清单，含质量自评、机械预检结果和待办。
@@ -118,10 +119,10 @@ wxstyle-review 审查一下这篇稿子
 | 文件 | 内容 |
 |---|---|
 | `article.md` | 当前正文，以它为准，不含 `#` 一级标题；文章标题填公众号后台标题栏 |
-| `review.md` | 标题候选、摘要、主张与来源表、质量自评、机械检查结果、待办 |
+| `review.md` | 标题候选、摘要、主张表（含原文措辞）、质量自评、机械检查结果、待办 |
 | `sources.md` | 完整链接和核对日期（正文里只保留来源名） |
 | `delivery.json` | 文字、配图、审核三项状态，以及正文和已审核版本的哈希 |
-| `images/` | 图片；本地路径只用于预览，发布时要在后台重新上传 |
+| `images/` | 图片，含文字卡封面 `cover-card.png`；本地路径只用于预览，发布时要在后台重新上传 |
 
 正文里不留 `【填：…】` 占位符，也不写“我没用过”：没有数据的部分整段删掉，没有实测就用“官方文档写的是……”这类来源归属的写法。你有真实的实测或评论，发给我，我再加进正文。
 
@@ -177,7 +178,7 @@ README.md, LICENSE, CONTRIBUTING.md, CHANGELOG.md   给人看的文档，仓库�
 examples/                                            真实产出示例
 skills/wxstyle/         skill 本体（npx skills add 按这个约定寻找）
   SKILL.md              给 Claude 的主说明
-  references/           画像 schema、素材与交付、社区素材、标题与封面、工具分工、结尾问题、机制讲解结构、配图规则、排版规则、改稿复核、检查脚本说明、审核模板
+  references/           画像 schema、素材与交付、标题与封面、封面测试、结尾问题、机制讲解结构、配图规则、排版规则、改稿复核、检查脚本说明、审核模板
   scripts/               上面的检查脚本
   profiles/              画像和原文缓存
   evals/                 触发评测、行为评测、回归测试

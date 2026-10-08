@@ -199,14 +199,17 @@ class CaveatScopeAndListCountTests(unittest.TestCase):
     """来自2026-09-30对Jev文章的独立复核：引用官方自我保留时要看清它针对哪些主张，
     压缩官方编号列表时“共X条”的计数要点数确认覆盖。"""
 
-    def test_tool_strategy_warns_about_caveat_scope(self):
-        text = skill_md()
+    # 1.11.0 起两条都从 SKILL.md 挪到 editorial-checks.md（只来自一次事故，不必每次全文读）
+    def editorial(self):
+        return (ROOT / "references" / "editorial-checks.md").read_text(encoding="utf-8")
+
+    def test_editorial_checks_warns_about_caveat_scope(self):
+        text = self.editorial()
         self.assertIn("自我保留", text)
         self.assertIn("针对文中的哪些具体主张", text)
 
-    def test_tool_strategy_warns_about_list_count_claims(self):
-        text = skill_md()
-        self.assertIn("共X条", text)
+    def test_editorial_checks_warns_about_list_count_claims(self):
+        self.assertIn("共X条", self.editorial())
 
 
 class NoPlaceholderNoDisclaimerTests(unittest.TestCase):
@@ -342,7 +345,7 @@ class LowEvidenceLabelTests(unittest.TestCase):
     """低验证内容要在文档开头明说验证次数，提醒以后的自己别在没有新证据前继续扩展。"""
 
     def test_low_evidence_docs_are_labeled(self):
-        for name in ("explainer-structure.md", "tools-guide.md", "community-sources.md", "imagegen-prompt-template.md"):
+        for name in ("explainer-structure.md", "cover-testing.md"):
             d = (ROOT / "references" / name).read_text(encoding="utf-8")
             self.assertIn("验证次数", d, name)
             self.assertIn("不要在没有新证据前继续扩展", d, name)
@@ -379,18 +382,42 @@ class ExplainerStructureTests(unittest.TestCase):
         self.assertIn("案例卖可信度", d)
 
 
-class ToolsGuideTests(unittest.TestCase):
-    def doc(self):
-        return (ROOT / "references" / "tools-guide.md").read_text(encoding="utf-8")
+class CoverToolPathTests(unittest.TestCase):
+    """tools-guide.md 在 1.11.0 删掉了（验证次数低），唯一验证过的路径并进了 title-and-cover.md。"""
 
-    def test_linked_from_skill_and_readme(self):
-        self.assertIn("references/tools-guide.md", skill_md())
-        self.assertIn("tools-guide", (REPO_ROOT / "README.md").read_text(encoding="utf-8"))
-
-    def test_covers_the_three_tools_and_is_honest_about_verification(self):
-        d = self.doc()
-        for word in ("Claude Code", "Codex", "ChatGPT", "封面生图", "未验证", "以当时版本为准"):
+    def test_verified_cover_path_kept_in_title_and_cover(self):
+        d = (ROOT / "references" / "title-and-cover.md").read_text(encoding="utf-8")
+        for word in ("ChatGPT", "make_cover_card.py", "唯一真正验证过的路径", "只在一个工具里改"):
             self.assertIn(word, d)
+
+
+class ReviewAndDeliveryLoopTests(unittest.TestCase):
+    """1.11.0：三篇文章每篇都要作者另外喊“审查”才查出 6—8 处错，错误集中在限定词、术语翻译、
+    范围说法和网页总结；三篇都没封面图、交付后也没写回画像。"""
+
+    def test_claim_table_has_original_wording_column(self):
+        self.assertIn("原文措辞", skill_md())
+        tpl = (ROOT / "references" / "review-checklist-template.md").read_text(encoding="utf-8")
+        self.assertIn("| 主张 | 类别 | 来源 | 原文措辞 |", tpl)
+
+    def test_self_review_checks_the_four_recurring_error_types(self):
+        text = skill_md()
+        for word in ("限定词", "术语译得对不对", "范围说法", "网页总结"):
+            self.assertIn(word, text)
+
+    def test_delivery_writes_back_to_self_profile(self):
+        text = skill_md()
+        self.assertIn("写回画像", text)
+        self.assertIn("article_history", text)
+
+    def test_publish_data_has_a_route(self):
+        self.assertIn("记一下数据", skill_md())
+        self.assertIn("performance_log", skill_md())
+
+    def test_cover_has_a_text_card_fallback(self):
+        text = skill_md()
+        self.assertIn("封面保底", text)
+        self.assertIn("cover-card.png", text)
 
 
 class CoverPromptTests(unittest.TestCase):

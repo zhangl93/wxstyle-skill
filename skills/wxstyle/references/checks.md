@@ -70,7 +70,7 @@ python scripts/claim_check.py --file <正文> [--hands-on] [--review <review.md>
 ## 交付阶段
 
 - `python scripts/check_layout.py --file article.md`：排版语法。error 必须处理，warn 人工判断，pending（占位符、本地图片）写入待办。输出的 `stats.body_chars` 是正文字数，报字数用它，不用按字节计的 `wc -c`（中文会被放大约3倍）。
-- `python scripts/check_delivery.py <文章目录>`：只核对文件、哈希和素材清单，不代替事实或视觉审核。
+- `python scripts/check_delivery.py <文章目录> [--profile <己方画像>]`：核对文件、哈希和素材清单，以及封面保底、画像写回两项交付收尾，不代替事实或视觉审核。
 
 ## 画像阶段
 

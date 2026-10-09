@@ -2,6 +2,16 @@
 
 版本号写在 SKILL.md 的 `metadata.version`。改了 SKILL.md、references 或脚本行为就升一位：改流程或规则升中间位，只改脚本细节或文档升末位。
 
+## 1.13.2（2026-10-09）
+
+全量审查发现，1.11.0 加进“输出”的两项交付收尾，在后来的真实运行里都被跳过了：GPT-6.1 Sol 那篇没做封面文字卡，画像里这篇的 status 写成了 draft。两项都只写在文档里，没有脚本兜底，191 项测试都发现不了。这次不再加文字规则，改成 `check_delivery.py` 查：
+
+- **封面保底**：`images/` 下要有文件名含 `cover` 的图片（`make_cover_card.py` 的裁切预览以“_”开头，不算）。没有就给 warning。
+- **写回画像**：新增 `--profile <己方画像>`，查 article_history 里有没有这篇（article_id 用文章目录名，SKILL.md 同步写明）、status 是不是 delivered 或 published。
+- 两项只影响 `ready_for_delivery`，不影响 `structural_pass`；输出新增 `cover`、`profile_written_back` 两个字段。
+- 在 GPT-6.1 Sol 那篇的真实目录上跑过：两项都报出来了。
+- 测试从 191 项变成 194 项：原有交付测试在临时目录里补一张封面；新增缺封面、画像写回（delivered / draft / 缺失）、不加 `--profile` 时不检查三项。
+
 ## 1.13.1（2026-10-09）
 
 全量审查时发现参考文档之间有几处互相矛盾，或指向已经不存在的位置。只改文档，规则本身不变：

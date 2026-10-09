@@ -154,7 +154,7 @@ skills/wxstyle/profiles/
 | `claim_check.py` | `--file article.md [--hands-on] [--review review.md] [--title 标题]` | 编造的第一人称体验、无来源数字、绝对化承诺、无数据的热度说法、无来源评论引语、替作者许下的承诺、无数据支撑的概括断言（“大多数产品都不会”）；加 `--review` 或 `--title` 时也检查标题（绝对化、热度词、标题党、无归因数字） |
 | `make_cover_card.py` | `--big 85% --small 官方示例 --out images/02-cover.png`，或 `--bg 图片 --out ...` | 生成封面文字卡（900×383），或把 ChatGPT 生成的图裁成封面并可叠字；限制字数，保证字在转发裁切的中间 1:1 内，输出裁切预览。需要 Pillow |
 | `hot_list.py` | `[--file 页面.html]` | 读百度热搜实时榜：排名、热度分、摘要、抓取时间，标出含 AI 相关词的条目（只是初筛）；读不到就退出码 2，不返回空列表 |
-| `check_delivery.py` | `<文章目录>` | 交付文件、哈希和素材清单是否一致 |
+| `check_delivery.py` | `<文章目录> [--profile 己方画像]` | 交付文件、哈希和素材清单是否一致；有没有封面图；加 `--profile` 时查这篇是否已写回画像 |
 | `validate_profile.py` | `skills/wxstyle/profiles/*.json` | 画像结构，以及样本数与 `_raw` 缓存、置信度是否一致 |
 | `render_profile_summary.py` | `skills/wxstyle/profiles/xxx.json` | 生成人话摘要 |
 | `profile_stats.py` | `--dir skills/wxstyle/profiles/_raw/target_xxx` | 段长、句长、配图、加粗、问号等统计 |

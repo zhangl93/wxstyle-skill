@@ -86,6 +86,8 @@ class DeliveryTests(unittest.TestCase):
         self.root = Path(self.tmp.name)
         self.article = self.root / "article.md"
         self.article.write_text("# Title\n\nArticle.", encoding="utf-8")
+        (self.root / "images").mkdir()
+        (self.root / "images" / "cover-card.png").write_bytes(b"cover")
         digest = delivery.file_hash(self.article)
         self.data = {"article_type": "introduction", "text_status": "complete", "visual_status": "not_requested",
                      "review_status": "complete", "article_sha256": digest, "reviewed_article_sha256": digest,
@@ -129,6 +131,35 @@ class DeliveryTests(unittest.TestCase):
             self.article.write_text(markup, encoding="utf-8")
             self.data.update(article_sha256=delivery.file_hash(self.article), reviewed_article_sha256=delivery.file_hash(self.article))
             self.assertFalse(self.run_audit()["structural_pass"])
+
+
+    def test_missing_cover_blocks_ready_but_not_structure(self):
+        (self.root / "images" / "cover-card.png").unlink()
+        (self.root / "images" / "_cover-card-square-preview.png").write_bytes(b"preview")
+        result = self.run_audit()
+        self.assertTrue(result["structural_pass"])
+        self.assertFalse(result["ready_for_delivery"])
+        self.assertIsNone(result["cover"])
+        self.assertTrue(any("封面" in w for w in result["warnings"]))
+
+    def audit_with_profile(self, status):
+        rows = [{"article_id": self.root.resolve().name, "updated_at": "2026-10-09", "hook": "h", "status": status}] if status else []
+        path = self.root / "self.json"
+        path.write_text(json.dumps({"self_only_fields": {"article_history": rows}}), encoding="utf-8")
+        (self.root / "delivery.json").write_text(json.dumps(self.data), encoding="utf-8")
+        return delivery.audit(self.root, path)
+
+    def test_profile_write_back_is_checked_when_given(self):
+        self.assertTrue(self.audit_with_profile("delivered")["ready_for_delivery"])
+        draft = self.audit_with_profile("draft")
+        self.assertFalse(draft["ready_for_delivery"])
+        self.assertFalse(draft["profile_written_back"])
+        missing = self.audit_with_profile(None)
+        self.assertFalse(missing["ready_for_delivery"])
+        self.assertTrue(any("article_history" in w for w in missing["warnings"]))
+
+    def test_profile_not_checked_without_flag(self):
+        self.assertIsNone(self.run_audit()["profile_written_back"])
 
 
 class ProfileAndPhraseTests(unittest.TestCase):

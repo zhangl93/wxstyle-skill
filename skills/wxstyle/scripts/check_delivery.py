@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""只读检查图文文件一致性；不替代事实、版权或视觉审核。"""
+"""只读检查图文文件一致性；不替代事实、版权或视觉审核。
+
+另外两项交付收尾（SKILL.md“输出”）也在这里查，因为光写在文档里，真实运行时会被跳过：
+- 封面保底：images/ 下要有文件名含 cover 的图（make_cover_card.py 的裁切预览以“_”开头，不算）。
+- 写回画像：加 --profile 时，查己方画像 article_history 里有没有这篇（article_id 用文章目录名），
+  status 是不是 delivered 或 published。
+这两项不影响 structural_pass，只影响 ready_for_delivery。
+"""
 import argparse
 import hashlib
 import json
@@ -16,7 +23,29 @@ def image_targets(text):
     return re.findall(r'!\[[^\]]*\]\(\s*(<[^>]+>|[^\s)]+)(?:\s+"[^"]*")?\s*\)', text)
 
 
-def audit(directory):
+IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp"}
+
+
+def find_cover(directory):
+    images = directory / "images"
+    if not images.is_dir():
+        return None
+    for p in sorted(images.iterdir()):
+        if p.is_file() and p.suffix.lower() in IMAGE_EXT and "cover" in p.name.lower() and not p.name.startswith("_"):
+            return p.relative_to(directory).as_posix()
+    return None
+
+
+def profile_status(profile, article_id):
+    data = json.loads(Path(profile).read_text(encoding="utf-8-sig"))
+    rows = (data.get("self_only_fields") or {}).get("article_history") or []
+    for row in rows:
+        if isinstance(row, dict) and row.get("article_id") == article_id:
+            return row.get("status")
+    return None
+
+
+def audit(directory, profile=None):
     directory = Path(directory)
     article = directory / "article.md"
     text = article.read_text(encoding="utf-8-sig")
@@ -90,10 +119,22 @@ def audit(directory):
         errors.append("图片待补但缺少待办")
     if data.get("review_status") != "complete":
         warnings.append("编辑审核未完成")
-    ready = (not errors and not pending and data.get("text_status") == "complete"
+    cover = find_cover(directory)
+    if not cover:
+        warnings.append("没有封面图（images/ 下文件名含 cover）：按 SKILL.md“输出”用 make_cover_card.py 做文字卡保底")
+    written_back = None
+    if profile:
+        status = profile_status(profile, directory.resolve().name)
+        written_back = status in {"delivered", "published"}
+        if status is None:
+            warnings.append(f"己方画像的 article_history 里没有这篇（article_id 应为文章目录名 {directory.resolve().name}）")
+        elif not written_back:
+            warnings.append(f"己方画像里这篇的 status 是 {status}，交付后应为 delivered")
+    ready = (not errors and not pending and cover is not None and written_back is not False and data.get("text_status") == "complete"
              and data.get("visual_status") in {"complete", "not_requested"}
              and data.get("review_status") == "complete")
-    return {"article_sha256": digest, "image_count": len(targets), "errors": errors,
+    return {"article_sha256": digest, "image_count": len(targets), "cover": cover,
+            "profile_written_back": written_back, "errors": errors,
             "warnings": warnings, "pending_items": pending, "structural_pass": not errors,
             "ready_for_delivery": ready, "limitation": "不验证线上事实、截图真伪、授权或视觉质量"}
 
@@ -101,9 +142,10 @@ def audit(directory):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory")
+    parser.add_argument("--profile", help="己方画像 JSON，检查这篇是否已写回 article_history")
     args = parser.parse_args()
     try:
-        output = audit(args.directory)
+        output = audit(args.directory, args.profile)
     except (OSError, ValueError, TypeError) as error:
         output = {"errors": [str(error)], "structural_pass": False, "ready_for_delivery": False}
     print(json.dumps(output, ensure_ascii=False, indent=2))

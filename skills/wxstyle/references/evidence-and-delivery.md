@@ -33,7 +33,7 @@
 
 text_status：draft/complete；visual_status：not_requested/pending/complete；review_status：pending/complete。assets.status：pending/ready/omitted。ready须有存在的本地path、kind、purpose；截图须有source_url，AI图kind为ai_generated且保留提示词。pending须有note，待办写入pending_items。omitted仅为不再需要的候选并写明原因，不能靠省略消除用户要求。
 
-python scripts/check_delivery.py <目录> 检查结构、哈希和本地素材引用。待办存在可通过一致性检查，但ready_for_delivery为false；ready只代表记录与本地文件满足要求，不保证事实、权利或视觉质量。脚本只支持标准Markdown图片，引用式或HTML图片报告为需人工处理。远程图片不自动下载或验证，转成本地已检查文件后再标完成。
+python scripts/check_delivery.py <目录> [--profile <己方画像>] 检查结构、哈希和本地素材引用；还查 images/ 下有没有封面（文件名含 cover），加 --profile 时查画像里这篇是否已写回且 status 为 delivered/published。这两项只影响 ready_for_delivery，不影响 structural_pass。待办存在可通过一致性检查，但ready_for_delivery为false；ready只代表记录与本地文件满足要求，不保证事实、权利或视觉质量。脚本只支持标准Markdown图片，引用式或HTML图片报告为需人工处理。远程图片不自动下载或验证，转成本地已检查文件后再标完成。
 
 ## 审核发布
 

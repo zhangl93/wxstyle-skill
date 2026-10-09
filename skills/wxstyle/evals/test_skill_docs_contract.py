@@ -391,6 +391,16 @@ class CoverToolPathTests(unittest.TestCase):
             self.assertIn(word, d)
 
 
+class CoverRealSceneTests(unittest.TestCase):
+    """1.15.0：作者要求生图提示词尽量在真实场景中构图，不默认用抽象的编辑示意图。"""
+
+    def test_prompt_template_asks_for_a_real_scene(self):
+        d = (ROOT / "references" / "title-and-cover.md").read_text(encoding="utf-8")
+        self.assertIn("生图先从真实场景构图", d)
+        self.assertIn("场景：[", d)
+        self.assertIn("要有人在做事", d)
+
+
 class ReviewAndDeliveryLoopTests(unittest.TestCase):
     """1.11.0：三篇文章每篇都要作者另外喊“审查”才查出 6—8 处错，错误集中在限定词、术语翻译、
     范围说法和网页总结；三篇都没封面图、交付后也没写回画像。"""

@@ -170,5 +170,9 @@
  {
   "query": "帮我找几个小红书笔记的选题，做穿搭的",
   "should_trigger": false
+ },
+ {
+  "query": "昨天那篇豆包交电费的公众号文章，帮我再弄一个贴图版本发小绿书，标题短一点",
+  "should_trigger": true
  }
 ]

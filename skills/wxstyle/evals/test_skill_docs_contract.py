@@ -422,6 +422,31 @@ class IndependentReviewTests(unittest.TestCase):
         self.assertIn("## 独立审查", tpl)
 
 
+class TietuTests(unittest.TestCase):
+    """1.18.0：贴图（小绿书）第一次接入。只补文字层，不重造平台的图片模板；
+    别人的图只提炼规律，不当生图参考；图上的字必须先过检查。"""
+
+    def doc(self):
+        return (ROOT / "references" / "title-and-cover.md").read_text(encoding="utf-8")
+
+    def test_routing_and_section_exist(self):
+        self.assertIn("做成贴图", skill_md())
+        d = self.doc()
+        self.assertIn("## 贴图（小绿书）", d)
+        self.assertIn("tietu.md", d)
+
+    def test_text_on_images_goes_through_the_checks(self):
+        self.assertIn("claim_check.py --file tietu.md", self.doc())
+
+    def test_others_images_are_not_generation_references(self):
+        d = self.doc()
+        self.assertIn("不上传给生图工具当参考图", d)
+        self.assertIn("不自动抓小红书", d)
+
+    def test_performance_log_separates_formats(self):
+        self.assertIn("format", (ROOT / "references" / "style-profile-schema.md").read_text(encoding="utf-8"))
+
+
 class ReviewAndDeliveryLoopTests(unittest.TestCase):
     """1.11.0：三篇文章每篇都要作者另外喊“审查”才查出 6—8 处错，错误集中在限定词、术语翻译、
     范围说法和网页总结；三篇都没封面图、交付后也没写回画像。"""

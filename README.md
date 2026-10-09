@@ -170,7 +170,7 @@ python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 - `evals/test_*.py`：脚本的回归测试。
 - `evals/eval_set.json`：测 skill 是否被正确触发，43 条请求（24 条该触发、19 条不该触发，含小红书、翻译、技术博客等相近的反例，以及”推送””公号稿”这类简短说法）。
 - `evals/fixture_benchmark/run.py`：夹具评测，约 90 条断言，检查脚本该报的报出来、不该报的不报，含没参与调规则的留出集。改脚本后运行 `python skills/wxstyle/evals/fixture_benchmark/run.py`，用 `--skill <旧版目录>` 可以和旧版做对比；需要 `profiles/_raw/target_阮一峰` 作语料。
-- `evals/workflow_cases.json`：31 个行为用例，执行方法见 [workflow-evaluation.md](skills/wxstyle/evals/workflow-evaluation.md)；脚本测试不能代替它。
+- `evals/workflow_cases.json`：32 个行为用例，执行方法见 [workflow-evaluation.md](skills/wxstyle/evals/workflow-evaluation.md)；脚本测试不能代替它。
 
 ## 目录
 

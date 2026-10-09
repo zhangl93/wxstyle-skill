@@ -401,6 +401,27 @@ class CoverRealSceneTests(unittest.TestCase):
         self.assertIn("要有人在做事", d)
 
 
+class IndependentReviewTests(unittest.TestCase):
+    """1.16.0：豆包缴费稿写稿人自评“限定词都保留了”，换人从原文重读才查出漏了一句关键限定。
+    交付前加一步独立审查：审查者没看过写稿过程，只拿正文和来源清单。"""
+
+    def test_skill_md_has_independent_review_step(self):
+        d = skill_md()
+        self.assertIn("**独立审查**", d)
+        self.assertIn("没看过写稿过程", d)
+        self.assertIn("独立审查做了", d)
+
+    def test_reviewer_brief_withholds_self_assessment(self):
+        d = (ROOT / "references" / "editorial-checks.md").read_text(encoding="utf-8")
+        self.assertIn("八、独立审查", d)
+        self.assertIn("不给 review.md 的自评和主张表", d)
+        self.assertIn("前后两句", d)
+
+    def test_review_template_records_it(self):
+        tpl = (ROOT / "references" / "review-checklist-template.md").read_text(encoding="utf-8")
+        self.assertIn("## 独立审查", tpl)
+
+
 class ReviewAndDeliveryLoopTests(unittest.TestCase):
     """1.11.0：三篇文章每篇都要作者另外喊“审查”才查出 6—8 处错，错误集中在限定词、术语翻译、
     范围说法和网页总结；三篇都没封面图、交付后也没写回画像。"""

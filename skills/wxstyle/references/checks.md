@@ -53,8 +53,6 @@ python scripts/claim_check.py --title <标题> [--title <标题>]    # 正文还
 
 其中 `reframe` 额外覆盖两个变体写法“不只是A，而是B”“不在于A，而在于B”。
 
-**这类正则检测有漏检上限，不再无限追加变体**：套路句式的变体几乎写不完，每发现一个新变体就加一条正则，边际成本会越来越高，而且下一个变体大概率还是漏的。已经覆盖的这几种是真实撞见过的高频写法，值得保留；再遇到新的漏网变体，优先判断值不值得单独加规则——只有反复出现、明显影响可信度的才加，零星一次的不必追。这类检测的真实定位是"抓最常见的几种"，不是"抓所有"，最终还是要靠人读。相比之下，`first_person_experience`、`unattributed_number` 这类涉及内容真实性的规则值得优先维护，句式套路类的规则性价比更低。
-
 ### claim_check：内容真实性
 
 - 标出编造的第一人称体验（`first_person_experience`）、正文里的“我没试过”式自我免责（`self_disclaimer`，改用来源归属的写法）、无来源的具体数字（`unattributed_number`）、绝对化承诺（`extreme_claim`）、无数据的热度说法（`unsupported_heat`）、无来源的评论引语（`unsourced_quote`）、没有数据支撑的概括断言（`unsupported_generalization`，“大多数产品都不会这么写”），以及替作者向读者许下的具体承诺（`author_promise`，“我去跑一遍”“下一篇拆给你看”）。

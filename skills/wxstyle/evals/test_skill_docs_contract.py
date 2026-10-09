@@ -239,7 +239,7 @@ class NoPlaceholderNoDisclaimerTests(unittest.TestCase):
 
 
 class ReaderPsychologyTests(unittest.TestCase):
-    """有选择地借用认知心理学：能让文章更好懂、更好记的原理采用并点名依据；
+    """有选择地借用认知心理学：只留落到具体动作上的两条（结尾收束、锚点要有来源）；
     能提高转化但要靠误导才有效的技巧（虚假社会认同、损失厌恶恐吓、稀缺话术）明确列为不用。"""
 
     def doc(self):
@@ -247,7 +247,7 @@ class ReaderPsychologyTests(unittest.TestCase):
 
     def test_adopts_named_cognitive_principles(self):
         d = self.doc()
-        for word in ("工作记忆", "峰终", "锚定"):
+        for word in ("峰终", "锚定"):
             self.assertIn(word, d)
 
     def test_explicitly_rejects_manipulative_techniques(self):

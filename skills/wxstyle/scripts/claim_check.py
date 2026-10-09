@@ -123,16 +123,21 @@ def sentences(par):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--file", required=True)
+    ap.add_argument("--file", help="正文；只查标题时可以不给")
     ap.add_argument("--hands-on", action="store_true", help="作者已提供真实实测记录，不再标第一人称体验")
     ap.add_argument("--title", action="append", default=[], help="要检查的标题，可重复")
     ap.add_argument("--review", help="review.md 路径，读取其中“标题候选”列出的标题")
     args = ap.parse_args()
-    path = Path(args.file)
-    if not path.exists():
-        print(json.dumps({"error": f"文件不存在: {args.file}"}, ensure_ascii=False))
+    if not args.file and not args.title and not args.review:
+        print(json.dumps({"error": "至少给 --file、--title 或 --review 其中一个"}, ensure_ascii=False))
         return 2
-    lines = path.read_text(encoding="utf-8-sig").splitlines()
+    lines = []
+    if args.file:
+        path = Path(args.file)
+        if not path.exists():
+            print(json.dumps({"error": f"文件不存在: {args.file}"}, ensure_ascii=False))
+            return 2
+        lines = path.read_text(encoding="utf-8-sig").splitlines()
 
     # 收集正文段落（跳过代码块、表格、标题、图片、图注），保留行号
     paras = []

@@ -7,7 +7,8 @@
 ```text
 python scripts/ai_tell_check.py --file <正文>
 python scripts/similarity_check.py --generated <正文> --reference <对标原文目录>
-python scripts/claim_check.py --file <正文> [--hands-on] [--review <review.md>]
+python scripts/claim_check.py --file <正文> [--hands-on] [--review <review.md>] [--title <标题>]
+python scripts/claim_check.py --title <标题> [--title <标题>]    # 正文还没写、只查标题时
 ```
 
 ### ai_tell_check：AI味

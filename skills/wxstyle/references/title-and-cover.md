@@ -30,7 +30,7 @@
 
 1. 每种适用的写法各写一个，共 5—6 个，不要只改几个字。
 2. 逐个过三问，淘汰过不了的。
-3. 跑 `python scripts/claim_check.py --file article.md --title "标题"`，处理绝对化、热度词、标题党、无归因数字、超长。
+3. 跑 `python scripts/claim_check.py --title "标题"`（可重复传多个；正文还没写时不用 `--file`），处理绝对化、热度词、标题党、无归因数字、超长。写完正文后，第6步的 `claim_check.py --file article.md --review review.md` 会连标题一起再查一遍。
 4. 留 3—5 个，写清每个的写法、为什么会被点、风险；选一个推荐，并说明备选适合什么情况（比如“想被搜到用 3，想引发好奇用 2”）。
 5. 避开 article_history 里近期用过的标题写法，别连着几篇同一个格式。
 

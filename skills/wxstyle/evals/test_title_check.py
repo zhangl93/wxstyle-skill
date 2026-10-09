@@ -93,6 +93,17 @@ class TitleCheckTests(unittest.TestCase):
         hits = {(i["rule"], i["text"]) for i in data["issues"] if i.get("source") == "title"}
         self.assertIn(("clickbait_title", "震惊！这个AI不看后悔"), hits)
 
+    def test_titles_can_be_checked_before_the_body_exists(self):
+        data, code = run("--title", "全网最强的AI工具", "--title", "一个正常的标题")
+        self.assertEqual(data["titles_checked"], 2)
+        self.assertEqual([i["rule"] for i in data["issues"]], ["extreme_claim"])
+        self.assertEqual(code, 1)
+
+    def test_no_input_at_all_is_an_error(self):
+        data, code = run()
+        self.assertIn("error", data)
+        self.assertEqual(code, 2)
+
     def test_body_check_is_unchanged_without_title_args(self):
         data, code = run("--file", self.body)
         self.assertEqual((data["issues"], code), ([], 0))

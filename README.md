@@ -79,7 +79,7 @@ python -m scripts.package_skill <克隆路径>/wxstyle-skill/skills/wxstyle <输
 python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 ```
 
-全部通过（写这一行时是 191 项），说明脚本本身正常。
+全部通过，说明脚本本身正常。
 
 ## 快速开始
 

@@ -2,6 +2,17 @@
 
 版本号写在 SKILL.md 的 `metadata.version`。改了 SKILL.md、references 或脚本行为就升一位：改流程或规则升中间位，只改脚本细节或文档升末位。
 
+## 1.13.1（2026-10-09）
+
+全量审查时发现参考文档之间有几处互相矛盾，或指向已经不存在的位置。只改文档，规则本身不变：
+
+- 封面要不要记进 delivery.json：`title-and-cover.md` 说记 `ai_generated`，SKILL.md 说封面不进 assets（记进去 `check_delivery.py` 会报错）。统一成不进 assets，工具、提示词和路径写在 review.md 的封面方案。
+- 最终回复要不要给封面提示词：`title-and-cover.md` 说每次都给，SKILL.md“输出”的回复格式里没有。改成以 SKILL.md 为准，提示词在 review.md。
+- 封面上能不能放事实：`editorial-checks.md` 说不承载事实，`title-and-cover.md` 说允许有来源的事实。改成“不承载未核实的事实”，细则以 `title-and-cover.md` 为准。
+- `editorial-checks.md`、`explainer-structure.md` 说证据规则在 `evidence-and-delivery.md`，1.6.0 起它只在 SKILL.md，改指向。
+- “找选题”的验证次数写的是 1.13.0 之前的旧规则，改成分开写：旧规则用过4次，新规则0次。
+- README 删掉单元测试总数，和 CLAUDE.md 的约定一致（总数只写在 CHANGELOG）。
+
 ## 1.13.0（2026-10-09）
 
 1.12.1 之后第二次实际找选题，又推出了离定位远的题：先跑 `hot_list.py`，再拿热搜命中的条目当候选，推荐第一的是“GPT-6.1 Sol Ultrafast”（API 定价档位），写稿时得先声明和定位冲突再拗角度。作者反馈“加了热点，选题越来越不是我想要的”。1.12.1 收紧的是热搜条目的收录条件，这次说明问题不在条件松紧，而在热搜不该当候选来源：规则原文“热搜条目要进候选”本身开了口子，粗筛又只写了“搜最近1—3天资讯”，没说去哪搜，执行时就被具体、有数字的热搜条目带走了。

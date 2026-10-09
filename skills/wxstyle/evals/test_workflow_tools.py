@@ -136,6 +136,7 @@ class DeliveryTests(unittest.TestCase):
     def test_missing_cover_blocks_ready_but_not_structure(self):
         (self.root / "images" / "cover-card.png").unlink()
         (self.root / "images" / "_cover-card-square-preview.png").write_bytes(b"preview")
+        (self.root / "images" / "cover-raw.png").write_bytes(b"uncropped generated image")
         result = self.run_audit()
         self.assertTrue(result["structural_pass"])
         self.assertFalse(result["ready_for_delivery"])

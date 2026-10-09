@@ -2,7 +2,9 @@
 
 脚本只做机械预检：零命中不代表文章质量合格，也不代表内容真实，命中也不代表必须删除。命中要由人或LLM复核，再决定改不改。路径都相对本skill的基准目录，输出是UTF-8的JSON。
 
-## 写作阶段的三个脚本
+## 写作阶段的脚本
+
+SKILL.md 写作流程第6步要跑四个：下面三个，加上“交付阶段”里的 `check_layout.py`。
 
 ```text
 python scripts/ai_tell_check.py --file <正文>
@@ -85,4 +87,4 @@ python scripts/claim_check.py --title <标题> [--title <标题>]    # 正文还
 
 ## 封面
 
-- `python scripts/make_cover_card.py --big 85% --small 官方示例 --out images/02-cover.png`：生成封面文字卡（900×383），输出中间 1:1 的裁切预览。`--bg 图片路径` 把 ChatGPT 等生成的无字插画居中裁成封面尺寸，可再叠字。封面字合计超过10个、大字放不进安全区会报错。需要 Pillow（`pip install pillow`），其余脚本不需要；字体按系统自动找（Windows 微软雅黑、macOS 冬青黑体、Linux Noto Sans CJK 或文泉驿正黑），都找不到时用 `--font-bold`、`--font` 指定。生成后要看图，尤其是裁切预览。
+- `python scripts/make_cover_card.py --big 85% --small 官方示例 --out images/cover-card.png`：生成封面文字卡（900×383），输出中间 1:1 的裁切预览。`--bg 图片路径` 把 ChatGPT 等生成的无字插画居中裁成封面尺寸，可再叠字。封面字合计超过10个、大字放不进安全区会报错。需要 Pillow（`pip install pillow`），其余脚本不需要；字体按系统自动找（Windows 微软雅黑、macOS 冬青黑体、Linux Noto Sans CJK 或文泉驿正黑），都找不到时用 `--font-bold`、`--font` 指定。生成后要看图，尤其是裁切预览。

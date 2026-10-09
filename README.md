@@ -142,7 +142,6 @@ skills/wxstyle/profiles/
 - 样本少的画像只是暂定观察：15 篇以下 `low`，15—20 篇 `medium`，20 篇以上 `high`，没有历史文章的己方画像是 `bootstrap`。
 - 画像里的数字应该用脚本统计，不凭感觉估：`profile_stats.py`。
 - 画像顶层字段有固定清单，额外的观察写进 `notes`；出现清单外的字段，`validate_profile.py` 会给警告。
-- 超过 60 天没更新的画像，`wxstyle-list` 会提醒你检查是否还适用。
 
 ## 脚本
 
@@ -154,7 +153,7 @@ skills/wxstyle/profiles/
 | `ai_tell_check.py` | `--file article.md [--allow 类别]` | AI 套话句式和结构：强信号见一次就计入，弱信号单独出现只列出、附近有别的信号才计入；不检查引用和代码；还查聊天残留、“标志着新篇章”式拔高、正文整体缺具体细节，以及“没有统一答案”“欢迎在评论区”这类套路框架；结构上查连续同开头、加粗小标签列表、每节一句话收尾、emoji 标题、“写在最后”式模板小标题 |
 | `similarity_check.py` | `--generated article.md --reference skills/wxstyle/profiles/_raw/target_xxx` | N-gram 相似度、连续重合、近似句 |
 | `claim_check.py` | `[--file article.md] [--hands-on] [--review review.md] [--title 标题]`（只查标题时可以不给 `--file`） | 编造的第一人称体验、无来源数字、绝对化承诺、无数据的热度说法、无来源评论引语、替作者许下的承诺、无数据支撑的概括断言（“大多数产品都不会”）；加 `--review` 或 `--title` 时也检查标题（绝对化、热度词、标题党、无归因数字） |
-| `make_cover_card.py` | `--big 85% --small 官方示例 --out images/02-cover.png`，或 `--bg 图片 --out ...` | 生成封面文字卡（900×383），或把 ChatGPT 生成的图裁成封面并可叠字；限制字数，保证字在转发裁切的中间 1:1 内，输出裁切预览。需要 Pillow |
+| `make_cover_card.py` | `--big 85% --small 官方示例 --out images/cover-card.png`，或 `--bg 图片 --out ...` | 生成封面文字卡（900×383），或把 ChatGPT 生成的图裁成封面并可叠字；限制字数，保证字在转发裁切的中间 1:1 内，输出裁切预览。需要 Pillow |
 | `hot_list.py` | `[--file 页面.html]` | 读百度热搜实时榜：排名、热度分、摘要、抓取时间，标出含 AI 相关词的条目（只是初筛）；读不到就退出码 2，不返回空列表 |
 | `check_delivery.py` | `<文章目录> [--profile 己方画像]` | 交付文件、哈希和素材清单是否一致；有没有封面图；加 `--profile` 时查这篇是否已写回画像 |
 | `validate_profile.py` | `skills/wxstyle/profiles/*.json` | 画像结构，以及样本数与 `_raw` 缓存、置信度是否一致 |

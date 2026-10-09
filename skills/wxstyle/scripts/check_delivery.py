@@ -2,7 +2,7 @@
 """只读检查图文文件一致性；不替代事实、版权或视觉审核。
 
 另外两项交付收尾（SKILL.md“输出”）也在这里查，因为光写在文档里，真实运行时会被跳过：
-- 封面保底：images/ 下要有文件名含 cover 的图（make_cover_card.py 的裁切预览以“_”开头，不算）。
+- 封面保底：images/ 下要有文件名含 cover 的图（make_cover_card.py 的裁切预览以“_”开头、生图原图文件名含 raw，都不算）。
 - 写回画像：加 --profile 时，查己方画像 article_history 里有没有这篇（article_id 用文章目录名），
   status 是不是 delivered 或 published。
 这两项不影响 structural_pass，只影响 ready_for_delivery。
@@ -31,7 +31,7 @@ def find_cover(directory):
     if not images.is_dir():
         return None
     for p in sorted(images.iterdir()):
-        if p.is_file() and p.suffix.lower() in IMAGE_EXT and "cover" in p.name.lower() and not p.name.startswith("_"):
+        if p.is_file() and p.suffix.lower() in IMAGE_EXT and "cover" in p.name.lower() and "raw" not in p.name.lower() and not p.name.startswith("_"):
             return p.relative_to(directory).as_posix()
     return None
 

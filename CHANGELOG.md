@@ -2,6 +2,18 @@
 
 版本号写在 SKILL.md 的 `metadata.version`。改了 SKILL.md、references 或脚本行为就升一位：改流程或规则升中间位，只改脚本细节或文档升末位。
 
+## 1.17.1（2026-10-09）
+
+同一次独立审查查出的文档不一致，逐条对齐，规则本身不变：
+
+- 封面能不能放事实：`wechat-layout.md` 还写着“不承载事实主张”（1.13.1 只改了 `editorial-checks.md`），统一成“不承载未核实的事实”。
+- 主张表列数：`evidence-and-delivery.md` 自己列了 7 列（多“用途”，“来源”叫“原始来源”），改成指回 SKILL.md 第 2 步的 6 列，表放 review.md。
+- sources.md 是什么：`evidence-and-delivery.md` 说“多来源稿可单列 sources.md”，像是主张表的另一种存法；SKILL.md 和独立审查都把它当链接清单。统一为链接清单：完整链接、核对日期、怎么读的。
+- 过期指向：`make_cover_card.py` 说对应 title-and-cover.md 的“文字卡”方案，没有这一节，改指 SKILL.md 封面保底和“文字主导”方向；README 说“超过 60 天没更新的画像，wxstyle-list 会提醒”，没有任何脚本或规则实现，删掉。
+- `checks.md` 标题“写作阶段的三个脚本”和 SKILL.md 第 6 步的“四个”对不上，写明第四个是交付阶段那节的 `check_layout.py`。
+- 封面文件名示例统一成 `cover-card.png`（原来 checks.md、README、脚本说明里是 `02-cover.png`）。
+- `check_delivery.py` 认封面时排除文件名含 `raw` 的图：生图原图 `cover-raw.png` 没裁切，原来也会被当成“有封面”。
+
 ## 1.17.0（2026-10-09）
 
 第二次全量审查，这次交给一个没参与过修改的子代理做。它查出最严重的一条：`~/.claude/skills/wxstyle` 链接到 npx 装的副本，版本还是 1.9.1（9 月 30 日装的），1.10—1.16 的规则在日常会话里从没加载过；那份副本也不带己方画像和对标原文缓存。本机已改为链接到仓库，npx 副本也更新了。仓库里这一批修的是“按流程走不通”的地方：

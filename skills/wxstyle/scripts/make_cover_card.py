@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """生成公众号封面：文字卡（暖色渐变底，一个大字加一行小字），或把 ChatGPT 等生成的图裁成封面尺寸并可叠字。
 
-对应 references/title-and-cover.md 的“文字卡”方案。要点：
+对应 SKILL.md“输出”的封面保底，和 references/title-and-cover.md“选画面”里的“文字主导”方向。要点：
 - 头条大图 900×383；转发和列表里会裁成中间的 383×383，所以大字宽度限制在安全区内，
   同时输出裁切预览（square_preview），检查有没有被切掉。
 - 封面上的字合计不超过 10 个，超了直接报错，不悄悄缩小。
@@ -14,9 +14,9 @@ macOS 用冬青黑体（Hiragino Sans GB），Linux 用 Noto Sans CJK 或文泉�
 背景图至少 900×383，比例不对时居中裁切，主体要放在图的中间。
 
 用法：
-    python make_cover_card.py --big 85% --small 官方示例 --out images/02-cover.png
-    python make_cover_card.py --bg images/cover-raw.png --out images/02-cover.png
-    python make_cover_card.py --bg images/cover-raw.png --big 85% --small 官方示例 --out images/02-cover.png
+    python make_cover_card.py --big 85% --small 官方示例 --out images/cover-card.png
+    python make_cover_card.py --bg images/cover-raw.png --out images/cover-card.png
+    python make_cover_card.py --bg images/cover-raw.png --big 85% --small 官方示例 --out images/cover-card.png
 """
 import argparse
 import json

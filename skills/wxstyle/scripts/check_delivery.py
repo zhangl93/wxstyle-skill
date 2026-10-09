@@ -5,7 +5,9 @@
 - 封面保底：images/ 下要有文件名含 cover 的图（make_cover_card.py 的裁切预览以“_”开头、生图原图文件名含 raw，都不算）。
 - 写回画像：加 --profile 时，查己方画像 article_history 里有没有这篇（article_id 用文章目录名），
   status 是不是 delivered 或 published。
-这两项不影响 structural_pass，只影响 ready_for_delivery。
+- 独立审查和主张表：review.md 里要有“## 独立审查”一节且表里至少一行（或写明“沿用上次独立审查”），
+  “## 主张表”表里至少一行。只查有没有，不查内容对不对。
+这几项不影响 structural_pass，只影响 ready_for_delivery。
 """
 import argparse
 import hashlib
@@ -43,6 +45,34 @@ def profile_status(profile, article_id):
         if isinstance(row, dict) and row.get("article_id") == article_id:
             return row.get("status")
     return None
+
+
+def section_rows(text, heading):
+    """返回某个 ## 小节里表格的数据行（去掉表头、分隔行和全空行）。"""
+    m = re.search(rf"^##\s*{re.escape(heading)}\s*$(.*?)(?=^##\s|\Z)", text, re.M | re.S)
+    if not m:
+        return None, ""
+    body = m.group(1)
+    rows = [l for l in body.splitlines() if l.strip().startswith("|")]
+    data = [r for r in rows[2:] if r.replace("|", "").strip()]
+    return data, body
+
+
+def review_gaps(directory):
+    review = directory / "review.md"
+    if not review.is_file():
+        return ["没有 review.md"]
+    text = review.read_text(encoding="utf-8-sig")
+    gaps = []
+    rows, body = section_rows(text, "独立审查")
+    if rows is None:
+        gaps.append("review.md 没有“独立审查”一节（SKILL.md 写作流程第7步）")
+    elif not rows and "沿用上次独立审查" not in body:
+        gaps.append("review.md 的“独立审查”一节是空的")
+    rows, _ = section_rows(text, "主张表")
+    if not rows:
+        gaps.append("review.md 的主张表是空的或没有")
+    return gaps
 
 
 def audit(directory, profile=None):
@@ -130,7 +160,9 @@ def audit(directory, profile=None):
             warnings.append(f"己方画像的 article_history 里没有这篇（article_id 应为文章目录名 {directory.resolve().name}）")
         elif not written_back:
             warnings.append(f"己方画像里这篇的 status 是 {status}，交付后应为 delivered")
-    ready = (not errors and not pending and cover is not None and written_back is not False and data.get("text_status") == "complete"
+    gaps = review_gaps(directory)
+    warnings.extend(gaps)
+    ready = (not errors and not pending and cover is not None and written_back is not False and not gaps and data.get("text_status") == "complete"
              and data.get("visual_status") in {"complete", "not_requested"}
              and data.get("review_status") == "complete")
     return {"article_sha256": digest, "image_count": len(targets), "cover": cover,

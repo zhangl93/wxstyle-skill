@@ -79,6 +79,11 @@ class SimilarityTests(unittest.TestCase):
             self.assertFalse(result["overall_pass"])
 
 
+CLAIMS_OK = "## 主张表\n\n| 主张 | 类别 |\n|---|---|\n| 某数字 | 官方主张 |\n"
+REVIEW_OK = ("## 独立审查\n\n| 问题 | 级别 | 原文依据 | 处理 |\n|---|---|---|---|\n"
+             "| 漏了限定 | 必须改 | 原句 | 已改 |\n\n" + CLAIMS_OK)
+
+
 class DeliveryTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -88,6 +93,8 @@ class DeliveryTests(unittest.TestCase):
         self.article.write_text("# Title\n\nArticle.", encoding="utf-8")
         (self.root / "images").mkdir()
         (self.root / "images" / "cover-card.png").write_bytes(b"cover")
+        self.review = self.root / "review.md"
+        self.review.write_text(REVIEW_OK, encoding="utf-8")
         digest = delivery.file_hash(self.article)
         self.data = {"article_type": "introduction", "text_status": "complete", "visual_status": "not_requested",
                      "review_status": "complete", "article_sha256": digest, "reviewed_article_sha256": digest,
@@ -142,6 +149,24 @@ class DeliveryTests(unittest.TestCase):
         self.assertFalse(result["ready_for_delivery"])
         self.assertIsNone(result["cover"])
         self.assertTrue(any("封面" in w for w in result["warnings"]))
+
+    def test_missing_independent_review_blocks_ready(self):
+        self.review.write_text(CLAIMS_OK, encoding="utf-8")
+        result = self.run_audit()
+        self.assertTrue(result["structural_pass"])
+        self.assertFalse(result["ready_for_delivery"])
+        self.assertTrue(any("独立审查" in w for w in result["warnings"]))
+
+    def test_empty_review_table_or_claim_table_blocks_ready(self):
+        self.review.write_text("## 独立审查\n\n| 问题 | 级别 |\n|---|---|\n| | |\n\n## 主张表\n\n| 主张 | 类别 |\n|---|---|\n",
+                               encoding="utf-8")
+        warnings = self.run_audit()["warnings"]
+        self.assertTrue(any("独立审查" in w and "空" in w for w in warnings))
+        self.assertTrue(any("主张表" in w for w in warnings))
+
+    def test_reused_review_note_counts(self):
+        self.review.write_text("## 独立审查\n\n改动未涉及事实，沿用上次独立审查。\n\n" + CLAIMS_OK, encoding="utf-8")
+        self.assertTrue(self.run_audit()["ready_for_delivery"])
 
     def audit_with_profile(self, status):
         rows = [{"article_id": self.root.resolve().name, "updated_at": "2026-10-09", "hook": "h", "status": status}] if status else []

@@ -38,7 +38,7 @@ Script usage (flags, how to read the output) is documented in the README script 
 - **`test_docs_links.py`** checks relative links in both `skills/wxstyle/SKILL.md` and `README.md`. It distinguishes the skill root from the repo root, because README links point into `skills/wxstyle/...`.
 - **Templates ↔ parsers**: `claim_check.py --review` parses the title table in `references/review-checklist-template.md` (`titles_from_review()`). It once silently checked 0 titles after the template changed while unit tests stayed green (CHANGELOG 1.9.1). When you change a template, a review.md structure or the profile schema, find the scripts that parse it and run them on a real or realistic sample, not just the hand-written fixtures.
 - **Profile schema**: `validate_profile.py` holds the allowed keys; `references/style-profile-schema.md` must document every key (enforced by `ProfileSchemaTests`). Committed profiles are only `profiles/target_*.json`. `profiles/_raw/` (others' original articles) and `profiles/self_*.json` (personal data) are gitignored and must never be committed.
-- **Counts in the README** (trigger-set size 43 = 24 positive + 19 negative, 30 workflow cases, "约 90 条断言" for the fixture benchmark) are kept in sync by hand. Update them when you add cases. Unit-test totals appear only in CHANGELOG entries, not in the README.
+- **Counts in the README** (trigger-set size 43 = 24 positive + 19 negative, 31 workflow cases, "约 90 条断言" for the fixture benchmark) are kept in sync by hand. Update them when you add cases. Unit-test totals appear only in CHANGELOG entries, not in the README.
 
 ## Versioning and change discipline
 

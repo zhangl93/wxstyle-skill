@@ -2,7 +2,7 @@
 """读百度热搜实时榜，输出排名、热度分和摘要，供“找选题”标热度依据。
 
 只读公开、不用登录的页面；页面里找不到数据（改版、返回验证页、网络出错）就报错退出，不重试、不绕过。
-关键词命中只是初筛：摘要里提到“大模型”或“AI生成”不等于这条新闻的主角是 AI，进不进候选按 SKILL.md“找选题”判断。
+热搜不新增候选，只给粗筛留下的候选标热度（SKILL.md“找选题”）。关键词命中只是初筛：摘要里提到“大模型”或“AI生成”不等于这条新闻的主角是 AI。
 
 用法：
     python hot_list.py                      # 实时抓取
@@ -84,7 +84,7 @@ def main():
         "item_count": len(items),
         "ai_keyword_hits": [x for x in items if x["ai_keyword_hit"]],
         "items": items,
-        "note": "关键词命中只是初筛；进候选要看新闻的主角是不是 AI 本身。热度依据写排名、热度分和 fetched_at。",
+        "note": "关键词命中只是初筛；热搜不新增候选，只给粗筛留下的候选标热度。热度依据写排名、热度分和 fetched_at。",
     }, ensure_ascii=False, indent=2))
     return 0
 

@@ -40,7 +40,14 @@ class SkillMdTests(unittest.TestCase):
         desc = re.search(r"description:\s*(.+)", head).group(1)
         self.assertIn("微信公众号", desc)
         self.assertNotIn("图文自媒体", desc)
-        self.assertIn("wxstyle-", desc)
+        self.assertIn("/wxstyle", desc)
+
+    def test_routing_table_names_subcommands(self):
+        # 1.20.0：Claude Code 里一个 skill 只有一个 /wxstyle，子命令跟在后面（官方文档的标准做法）
+        d = skill_md()
+        for sub in ("`topics`", "`write`", "`rewrite`", "`titles`", "`prep`", "`tietu`", "`visual`", "`review`", "`list`", "`log`", "`analyze`"):
+            self.assertIn(sub, d)
+        self.assertIn("第一个词是上表的子命令", d)
 
     def test_description_covers_plain_wechat_writing(self):
         desc = re.search(r"description:\s*(.+)", skill_md().split("---")[1]).group(1)

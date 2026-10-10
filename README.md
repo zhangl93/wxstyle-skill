@@ -73,7 +73,7 @@ python -m scripts.package_skill <克隆路径>/wxstyle-skill/skills/wxstyle <输
 
 </details>
 
-装好后新开一个会话，技能列表里应该能看到 `wxstyle`，或者直接说一句"wxstyle-list"试一下。
+装好后新开一个会话，技能列表里应该能看到 `wxstyle`，或者输入 `/wxstyle list` 试一下。
 
 自检（在仓库根目录运行）：
 
@@ -85,34 +85,41 @@ python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 
 ## 快速开始
 
-直接用自然语言说，或用 `wxstyle-` 开头的命令。
+在 Claude Code 里，一个 skill 只对应一个斜杠命令 `/wxstyle`，具体做哪件事写在后面，这是 Claude Code 官方文档里的标准做法。下面两种写法效果一样：
 
 ```text
-参考数字生命卡兹克的画像，帮我写一篇 XX 的介绍。资料在这里……，我还没实际用过。
+/wxstyle write 豆包新增生活缴费，资料在……
 ```
 
 ```text
-wxstyle-review 审查一下这篇稿子
+帮我写一篇豆包生活缴费的公众号文章，资料在……
 ```
+
+不打斜杠、直接说公众号的事，skill 也会被自动触发。旧写法 `wxstyle-write` 这类也还认。
 
 最小路径：
 
-1. 给 3—5 篇对标账号的文章（链接或粘贴正文）→ `wxstyle-analyze`，得到一份暂定画像。
-2. 说明你自己的声音：有历史文章就分析；没有就用几组同题对比句选择，标为 `bootstrap`。
-3. `wxstyle-write`：给标题候选、摘要、正文。
-4. `wxstyle-publish-prep`：配图和排版。
-5. `wxstyle-review`：出审核清单，你按清单读完再发。
+1. 给 3—5 篇对标账号的文章（链接或粘贴正文）→ `/wxstyle analyze`，得到一份暂定画像。
+2. 说明你自己的声音：有历史文章就 `/wxstyle analyze --self`；没有就用几组同题对比句选择，标为 `bootstrap`。
+3. `/wxstyle write`：资料核实、标题、正文、检查、独立审查，交付文章目录。
+4. 你按 review.md 的待办读完、手机预览，再手动发布。
+5. 发布后 `/wxstyle log` 告诉它阅读数据。
 
 ## 命令
 
-| 命令 | 做什么 |
-|---|---|
-| `wxstyle-topics` | 找选题：给3—5个带信息差和原文链接的候选 |
-| `wxstyle-analyze` / `--self` | 分析文章，生成或更新对标画像 / 己方画像 |
-| `wxstyle-write` | 资料核实、标题、摘要、大纲、正文、独立审查 |
-| `wxstyle-publish-prep` | 真实配图、来源、排版 |
-| `wxstyle-review` | 评审现有稿或最终稿 |
-| `wxstyle-list` | 列出画像，并给人话摘要 |
+| 写法 | 也可以这么说 | 做什么 |
+|---|---|---|
+| `/wxstyle topics` | 今天有什么值得写 | 找选题：给 3 个带信息差和原文链接的候选 |
+| `/wxstyle write` | 写一篇…… | 资料核实、标题、正文、机械检查、独立审查，交付文章目录 |
+| `/wxstyle rewrite` | 改改这篇 | 改结构和表达，不新增、不丢原稿的事实 |
+| `/wxstyle titles` | 给这篇起几个标题 | 只出 3—5 个标题候选 |
+| `/wxstyle review` | 看看能不能发 | 机械检查加独立审查，写 review.md |
+| `/wxstyle prep` | 帮这篇配图排版 | 真实截图优先的配图、排版 |
+| `/wxstyle tietu` | 做成贴图、发小绿书 | 写 `tietu.md`：贴图标题、短正文、逐张图片清单 |
+| `/wxstyle visual` | 分析这些贴图截图 | 从你给的截图提炼首图规律，写视觉画像 |
+| `/wxstyle analyze`（`--self`） | 学一下某个号 | 分析文章，生成或更新对标画像 / 己方画像 |
+| `/wxstyle list` | 有哪些画像 | 列出画像，给人话摘要 |
+| `/wxstyle log` | 这篇发了，阅读 104 | 把发布数据记进己方画像，长文和贴图分开记 |
 
 ## 一篇文章的产物
 
@@ -137,7 +144,7 @@ skills/wxstyle/profiles/
   _raw/{target|self}_{账号名}/   分析用的原文缓存，相似度检查要用
 ```
 
-`profiles/_raw/`（别人文章的原文缓存）和 `profiles/self_*.json`（你自己的画像）都在 `.gitignore` 里，克隆下来是空的——这些是分析产出的个人/第三方数据，不随代码一起分发。用 `wxstyle-analyze` 分析几篇对标文章后会自动生成。
+`profiles/_raw/`（别人文章的原文缓存）和 `profiles/self_*.json`（你自己的画像）都在 `.gitignore` 里，克隆下来是空的——这些是分析产出的个人/第三方数据，不随代码一起分发。用 `/wxstyle analyze` 分析几篇对标文章后会自动生成。
 
 - 样本少的画像只是暂定观察：15 篇以下 `low`，15—20 篇 `medium`，20 篇以上 `high`，没有历史文章的己方画像是 `bootstrap`。
 - 画像里的数字应该用脚本统计，不凭感觉估：`profile_stats.py`。

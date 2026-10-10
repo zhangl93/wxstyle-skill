@@ -2,6 +2,16 @@
 
 版本号写在 SKILL.md 的 `metadata.version`。改了 SKILL.md、references 或脚本行为就升一位：改流程或规则升中间位，只改脚本细节或文档升末位。
 
+## 1.20.0（2026-10-10）
+
+作者问：为什么装上之后只有 `/wxstyle` 一个命令？查了 Claude Code 官方文档：自定义命令已经并入 skill，一个 skill 只对应一个 `/名字`；一个 skill 有多种用法时，标准做法是把子命令写在名字后面（官方自带的 `/claude-api migrate` 就是这样），后面的文字作为参数传进 skill。原来 README 写的 `wxstyle-write` 这类看着像独立命令，其实不是，容易让人误会；改稿、贴图、记数据这几种用法连命令名都没有。
+
+- SKILL.md 路由表每行开头加子命令：`topics`、`analyze`（`--self`）、`write`、`rewrite`、`titles`、`prep`、`tietu`、`visual`、`review`、`list`、`log`。写明 `/wxstyle` 后面第一个词是子命令就按那一行做，拼错一两个字母也按最接近的认（作者实际打过 `/wxstyle topocs`）；旧写法 `wxstyle-write` 和自然语言照样能用。
+- description 里“提到 wxstyle- 命令时使用”改成“用 /wxstyle 加子命令时使用”。
+- README 快速开始和命令表重写成 `/wxstyle 子命令` 的写法，补上原来没列的 5 种用法，找选题从“3—5 个”改成实际的 3 个。`editorial-checks.md`、`wechat-layout.md` 里的旧命令名同步。
+- 不做 `.claude/commands/` 那种旧格式的命令文件，也不拆成多个 skill（几种用法共用同一套证据规则、画像和检查脚本）。
+- 新增 `test_routing_table_names_subcommands`。
+
 ## 1.19.0（2026-10-10）
 
 豆包智能体备份那篇交付后，作者审查又查出几处问题，而且问题出在 skill 本身：独立审查其实已经写了“备份入口没有具体位置，这一步最容易卡住”，但标成了“建议改”（必须改只包括事实错误、说过头、标题不兑现）；写稿人补一句“入口我没有核实”就记成“部分处理”，还在质量六项里给自己的“兑现度”打了“强”。另外两类问题没有任何环节在查：读者里有多少人真的受影响；按审查意见补来源说明时写出的撇清长句、为收尾硬凑的句子。根本原因是 skill 的检查几乎都在防错，“有没有用、好不好读”交给写稿人自评或可以拖的建议改。

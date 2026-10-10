@@ -82,7 +82,10 @@ class SkillMdTests(unittest.TestCase):
             self.assertIn(word, text)
 
     def test_edit_route_forbids_adding_or_dropping_facts(self):
-        self.assertIn("不新增原稿没有的事实", skill_md())
+        # 1.21.0 起：不丢原有事实；不新增例子、角度、论点；核对原文补的限定要列成“新增”
+        d = skill_md()
+        self.assertIn("不丢原有的事实、数字、归因", d)
+        self.assertIn("列成“新增”", d)
 
     def test_author_habits_can_be_allowed(self):
         self.assertIn("--allow", skill_md())

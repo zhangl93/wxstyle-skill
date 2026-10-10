@@ -417,6 +417,21 @@ class IndependentReviewTests(unittest.TestCase):
         self.assertIn("不给 review.md 的自评和主张表", d)
         self.assertIn("前后两句", d)
 
+    def test_reviewer_scores_quality_not_the_writer(self):
+        # 1.19.0：写稿人给自己打“兑现度：强”，审查者打“弱”
+        d = (ROOT / "references" / "editorial-checks.md").read_text(encoding="utf-8")
+        self.assertIn("质量六项打分", d)
+        self.assertIn("不在 review.md 给自己打分", skill_md())
+
+    def test_unverified_core_action_is_must_fix_and_cannot_be_waved_off(self):
+        d = (ROOT / "references" / "editorial-checks.md").read_text(encoding="utf-8")
+        self.assertIn("关键一步没核实", d)
+        self.assertIn("不能自己把“必须改”降成“建议改”", d)
+        self.assertIn("从读者角度把全文通读一遍", d)
+
+    def test_topic_candidates_estimate_affected_readers(self):
+        self.assertIn("目标读者里大概多少人会受影响", skill_md())
+
     def test_review_template_records_it(self):
         tpl = (ROOT / "references" / "review-checklist-template.md").read_text(encoding="utf-8")
         self.assertIn("## 独立审查", tpl)

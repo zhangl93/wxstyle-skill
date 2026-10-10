@@ -42,6 +42,12 @@ class SkillMdTests(unittest.TestCase):
         self.assertNotIn("图文自媒体", desc)
         self.assertIn("/wxstyle", desc)
 
+    def test_rewrite_may_add_source_limits_but_must_list_them(self):
+        # 1.21.0：改稿考试里，重新核对原文补上的限定（如“中文效果不如英文”）和“不新增事实”冲突
+        d = skill_md()
+        self.assertIn("重新核对原文时发现原稿漏掉的限定", d)
+        self.assertIn("不新增原稿没有的例子、角度和论点", d)
+
     def test_routing_table_names_subcommands(self):
         # 1.20.0：Claude Code 里一个 skill 只有一个 /wxstyle，子命令跟在后面（官方文档的标准做法）
         d = skill_md()

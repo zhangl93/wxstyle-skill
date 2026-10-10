@@ -48,6 +48,10 @@ class SkillMdTests(unittest.TestCase):
         self.assertIn("重新核对原文时发现原稿漏掉的限定", d)
         self.assertIn("不新增原稿没有的例子、角度和论点", d)
 
+    def test_log_adds_published_topics_for_dedupe(self):
+        # 1.22.0：log 考试发现不是本 skill 写的已发布文章不在 recent_topics，找选题去不了重
+        self.assertIn("一并追加进 recent_topics", skill_md())
+
     def test_routing_table_names_subcommands(self):
         # 1.20.0：Claude Code 里一个 skill 只有一个 /wxstyle，子命令跟在后面（官方文档的标准做法）
         d = skill_md()

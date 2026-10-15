@@ -52,6 +52,14 @@ class SkillMdTests(unittest.TestCase):
         # 1.22.0：log 考试发现不是本 skill 写的已发布文章不在 recent_topics，找选题去不了重
         self.assertIn("一并追加进 recent_topics", skill_md())
 
+    def test_rules_loosened_after_blind_test(self):
+        # 1.23.0：盲评里装 skill 的稿子“像核查笔记”，几条规则压住了模型
+        d = skill_md()
+        self.assertIn("可以再读 `_raw` 里 2—3 篇原文", d)
+        self.assertIn("归因不用每句都写", d)
+        self.assertIn("作者建议鼓励写", d)
+        self.assertIn("为了过检查改得更难读的不改", d)
+
     def test_routing_table_names_subcommands(self):
         # 1.20.0：Claude Code 里一个 skill 只有一个 /wxstyle，子命令跟在后面（官方文档的标准做法）
         d = skill_md()

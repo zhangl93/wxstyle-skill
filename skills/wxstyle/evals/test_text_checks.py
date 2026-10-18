@@ -123,6 +123,56 @@ class ClaimCheckTests(TempMixin, unittest.TestCase):
                   "这份坦诚值得留意，我没见过几家同类产品这么写（个人观察，没有统计）。"):
             self.assertNotIn("unsupported_generalization", self.rules(s + "\n"), s)
 
+    def test_common_words_do_not_count_as_attribution(self):
+        # 1.26.1 前的漏报：前文出现“名称”“这篇文章”“数据”“对比如下”，后面的数字全部免检
+        for lead in ("说说这个产品的名称。", "这篇文章讲一个新工具。", "我们看看数据。",
+                     "我们研究一下这个工具。", "这表示它更快。", "两者对比如下。"):
+            self.assertIn("unattributed_number", self.rules(lead + "\n\n它的速度提升了 300%。\n"), lead)
+
+    def test_real_attribution_still_exempts_numbers(self):
+        for s in ("他称成本降低了一半，响应快了 3 倍。", "据官方博客，响应时间缩短了80%。",
+                  "根据定价页，每月 20 美元。", "研究显示，错误率下降了 30%。", "比如每天 300 条工单。"):
+            self.assertNotIn("unattributed_number", self.rules(s + "\n"), s)
+
+    def test_negated_hands_on_is_disclaimer_not_fabrication(self):
+        # 1.24.0 实跑暴露的误报：“我未亲测”被当成编造实测
+        for s in ("我未亲测，以下来自官方文档。", "我没有亲测过这个功能。", "这次没亲测。"):
+            got = self.rules(s + "\n")
+            self.assertNotIn("first_person_experience", got, s)
+            self.assertIn("self_disclaimer", got, s)
+
+    def test_affirmed_hands_on_still_flagged(self):
+        for s in ("我亲测了三天。", "亲测好用。"):
+            self.assertIn("first_person_experience", self.rules(s + "\n"), s)
+
+    def test_unattributed_numbers_in_tables_are_flagged(self):
+        table = "| 指标 | 数值 |\n|---|---|\n| 速度 | 快 40 倍 |\n| 价格 | 2 美元 |\n"
+        _, data, _ = run("claim_check.py", "--file", self.write("a.md", "对比如下。\n\n" + table))
+        lines = {i["line"] for i in data["issues"] if i["rule"] == "unattributed_number"}
+        self.assertEqual(lines, {5, 6})   # 只报数据行，不报表头和分隔行
+        self.assertIn("extreme_claim", self.rules("| 项 | 说明 |\n|---|---|\n| 速度 | 最强 |\n"))
+
+    def test_attributed_or_hypothetical_tables_are_clean(self):
+        table = "| 指标 | 数值 |\n|---|---|\n| 速度 | 快 40 倍 |\n"
+        for text in ("官方博客给的数字：\n\n" + table, "对比如下。\n\n" + table + "\n数据来源：官方定价页。\n",
+                     "| 指标 | 来源 |\n|---|---|\n| 快 40 倍 | 官方博客 |\n", "假设每天 300 条：\n\n" + table,
+                     "| 指标 | 时间 |\n|---|---|\n| 发布 | 2026年9月 |\n"):
+            self.assertNotIn("unattributed_number", self.rules(text), text)
+        # 真实交付稿：官方示例返回整理成表，“100%”是概率，不是绝对化承诺
+        sourced = "官方给出的示例返回：\n\n| 问题 | 概率 |\n|---|---|\n| 情绪 | 100%；把握程度 1.0 |\n"
+        self.assertEqual(self.rules(sourced), set())
+
+    def test_attribution_does_not_leak_between_tables(self):
+        text = "| 指标 | 来源 |\n|---|---|\n| 快 40 倍 | 官方博客 |\n\n| 指标 | 数值 |\n|---|---|\n| 价格 | 2 美元 |\n"
+        _, data, _ = run("claim_check.py", "--file", self.write("a.md", text))
+        self.assertEqual({i["line"] for i in data["issues"] if i["rule"] == "unattributed_number"}, {7})
+
+    def test_promise_hint_does_not_suggest_placeholder(self):
+        # 正文不许留【填：…】，提示不能让人改成它
+        _, data, _ = run("claim_check.py", "--file", self.write("a.md", "我会再测一遍。\n"))
+        issue = next(i for i in data["issues"] if i["rule"] == "author_promise")
+        self.assertNotIn("改成【填", issue["message"])
+
     def test_missing_file(self):
         code, data, err = run("claim_check.py", "--file", Path(self.tmp.name) / "no.md")
         self.assertEqual(code, 2)

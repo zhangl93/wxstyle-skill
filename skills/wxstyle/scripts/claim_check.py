@@ -4,7 +4,8 @@
 只查表面特征，不能核实事实，也不能证明一句话是真的：
 - first_person_experience：出现“我亲测/实测下来/我用它跑了”这类第一人称体验，
   而作者没有提供实测记录（默认视为未提供；有记录时加 --hands-on）
-- unattributed_number：带单位的具体数字，本段和前两段里都没有“官方称/据…/自述”等归因
+- unattributed_number：带单位的具体数字，本段和前两段里都没有“官方称/据…/自述”等归因；
+  表格里的数字按整张表判断（表前一段、表头、表格本身、表后一行）
 - extreme_claim：最强、绝对、100%、彻底解决等绝对化承诺（广告法风险）
 - unsupported_heat：刷屏、爆火、网友都在说等热度说法，同段没有链接或数据
 - unsourced_quote：“网友说：……”“评论区有人说：……”这类引语，同段没有来源链接
@@ -23,12 +24,14 @@ import re
 import sys
 from pathlib import Path
 
-ATTRIBUTION = re.compile(r"官方|据|教程|文档|文章|称|自述|表示|报道|数据显示|根据|声称|宣称|写到|写明|注明|原文|论文|研究|发布会|财报|公告|来源|转述|我编|假设|示例|示意|比如|例如|举个例子|举一个|虚构")
-HYPOTHETICAL = re.compile(r"我编|假设|假如|倘若|示例|示意|虚构|比如|例如|举个例子|举一个|如果你|如果每")
+# 归因词。单字的“据”“称”和泛称的“文章”“研究”会被“数据”“名称”“这篇文章”“研究一下”误带上，
+# 让前两段里的数字全部免检，所以排除这些组合词
+ATTRIBUTION = re.compile(r"官方|(?<![数证占单收票])据|教程|文档|博客|博文|(?<![名简昵职堪对俗])称|自述|(?<![这那])表示|报道|数据显示|根据|声称|宣称|写到|写明|注明|原文|论文|研究(?:显示|发现|表明|指出|称|人员|团队|报告)|发布会|财报|公告|来源|转述|我编|假设|示例|示意|(?<!对)比如|例如|举个例子|举一个|虚构")
+HYPOTHETICAL = re.compile(r"我编|假设|假如|倘若|示例|示意|虚构|(?<!对)比如|例如|举个例子|举一个|如果你|如果每")
 NUMBER = re.compile(r"[一二三四五六七八九十两]分之[一二三四五六七八九十]|(?<![\d.])\d+(?:\.\d+)?\s*(?:%|％|倍|毫秒|秒钟|分钟|小时|美元|元|万|亿|条|篇|个|次|天|GB|MB|k|K)|百分之[一二三四五六七八九十百\d]+|(?:提升|提高|降低|下降|增长|减少|节省|节约)了?\s*\d")
 DATE = re.compile(r"\d+\s*年|\d+\s*月|\d+\s*日|\d+\s*号|第\s*\d+\s*(?:步|期|个|条|种|点)|\d+\s*种|\d+\s*步")
 EXPERIENCE = re.compile(r"我(?:亲自|亲)?(?:测试|实测|测了|试了|试用|用了|跑了|体验了|跑通|做了个测试)|亲测|实测(?:下来|结果|发现)|亲身(?:试|用|体验)|(?:我|笔者|本人|自己)(?:也|又|已经)?(?:上手|试用|使用|用)了?[一二三四五六七八九十两\d]+(?:天|周|个月|次|晚|小时)|跑了(?:一晚上|一整晚|一夜|一天)|笔者(?:测试|实测|发现)|我(?:自己)?(?:发现|感觉|觉得)(?:它|这个).{0,6}(?:比|更)")
-NEGATED_EXPERIENCE = re.compile(r"(?:没有|没|无|未|尚未|不含|不包含|缺少|暂无|并未)[^，。；]{0,14}(?:实测|测试|跑过|试过|用过|体验)")
+NEGATED_EXPERIENCE = re.compile(r"(?:没有|没|无|未|尚未|不含|不包含|缺少|暂无|并未)[^，。；]{0,14}(?:亲测|实测|测试|跑过|试过|用过|体验)")
 EXTREME = re.compile(r"全网第一|行业第一|世界第一|国内第一|业内第一|唯一(?:一个|的)|首个|最(?:强|佳|先进|便宜|安全|稳定|牛)|最快(?!的速度|速度)|史上最|100\s*[%％]|百分之百|绝对|永久|永远|彻底(?:解决|消除|颠覆|取代)|一劳永逸|秒杀|碾压|吊打|完爆|零风险|万无一失|包治|保证(?:有效|成功|不会)")
 HEAT = re.compile(r"刷屏|爆火|火遍|火爆全网|全网(?:都在|热议)|网友(?:们)?都在说|大家都在(?:用|说)|刷爆|热搜|疯传|引爆")
 HEAT_DATA = re.compile(r"点赞|转发|阅读|播放|数据显示|榜|排名|\]\(http")
@@ -50,7 +53,7 @@ PROMISE = re.compile(r"我(?:会|将|打算|准备|挑|之后|下次|回头)[^�
 
 # 正文里的第一人称自我免责（“我没试过”“本文没有我自己的实测”）：只作复核提示，不判定说明不合理。
 # 用来源归属的写法代替（“官方文档写的是……”“社区里有人测过……”），但仍然不能编“我测了”。
-SELF_DISCLAIMER = re.compile(r"我(?:还|从)?(?:没有?|未|不曾)(?:实际|亲自|真正|真的)?(?:用过|试过|测过|测试过|使用过|跑过|体验过|上手)|没有包含我自己的(?:实测|测试|体验)|我自己(?:也)?(?:还)?没(?:有)?(?:用过|试过|测过)|本文没有(?:我的|作者的)(?:实测|测试)")
+SELF_DISCLAIMER = re.compile(r"我(?:还|从)?(?:没有?|未|不曾)(?:实际|亲自|真正|真的)?(?:用过|试过|测过|测试过|使用过|跑过|体验过|上手)|(?:没有?|未|尚未|并未)亲测|没有包含我自己的(?:实测|测试|体验)|我自己(?:也)?(?:还)?没(?:有)?(?:用过|试过|测过)|本文没有(?:我的|作者的)(?:实测|测试)")
 
 
 CLICKBAIT = re.compile(r"震惊|吓死|不看后悔|必看|速看|赶紧看|疯了|惊呆|炸裂|重磅|绝了|没想到|不转不|看完.{0,4}沉默")
@@ -139,15 +142,34 @@ def main():
             return 2
         lines = path.read_text(encoding="utf-8-sig").splitlines()
 
-    # 收集正文段落（跳过代码块、表格、标题、图片、图注），保留行号
+    # 收集正文段落（跳过代码块、表格、标题、图片、图注），保留行号；表格另收，单独查数字
     paras = []
+    tables = []   # 每张表：{"rows": [(行号, 单元格文字)], "context": 表前一段+表头+表后一行}
     in_code = False
+    prev_text, table, closing = "", None, None   # closing：刚结束、还在等表后那一行的表
     for no, line in enumerate(lines, 1):
         if line.strip().startswith("```"):
             in_code = not in_code
             continue
-        if in_code or not line.strip() or line.lstrip().startswith(("|", "#", "![", "*图注", "*配图")):
+        if in_code:
             continue
+        if line.lstrip().startswith("|"):
+            cells = " ".join(c.strip() for c in line.strip().strip("|").split("|"))
+            if table is None:
+                closing = None
+                table = {"rows": [], "context": prev_text + cells}   # 第一行是表头，只当上下文
+                tables.append(table)
+            elif not re.fullmatch(r"[\s:|-]*", line):
+                table["rows"].append((no, cells))
+            continue
+        if table is not None:
+            closing, table = table, None
+        if closing is not None and line.strip():
+            closing["context"] += line   # 表后紧跟的一行常是“数据来源：……”
+            closing = None
+        if not line.strip() or line.lstrip().startswith(("#", "![", "*图注", "*配图")):
+            continue
+        prev_text = line
         paras.append((no, line))
 
     issues = []
@@ -173,7 +195,7 @@ def main():
                     "拿“大多数/很少有/没有人”这类没有数据的断言给观点撑场面；删掉，或换成有来源的说法、明确标为个人观察")
             if PROMISE.search(plain):
                 add("pending", no, "author_promise", plain,
-                    "替作者向读者许诺了以后的行动；作者没说过就删掉，或改成【填：…】让作者决定")
+                    "替作者向读者许诺了以后的行动；作者没说过就删掉，要不要承诺在回复里问作者，正文不留【填：…】占位")
             if EXTREME.search(plain) and not ATTRIBUTION.search(plain):
                 add("warn", no, "extreme_claim", plain, "绝对化承诺，无依据不要写；改成有条件、有来源的说法")
             number_hit = NUMBER.search(plain)
@@ -185,6 +207,18 @@ def main():
             add("warn", no, "unsupported_heat", par, "热度说法没有数据或链接支撑；没有互动数据就不要称热门、刷屏或共识")
         if QUOTE.search(par) and not re.search(r"\]\(http", par):
             add("warn", no, "unsourced_quote", par, "引用网友或评论原话，需要原帖链接或截图；没有来源就不能当作真实评论")
+
+    # 表格里的数字：归因常写在表前一段、表头或表后的来源行，按整张表的上下文判断
+    for tbl in tables:
+        table_has_attr = bool(ATTRIBUTION.search(tbl["context"] + "".join(c for _, c in tbl["rows"])))
+        for no, cells in tbl["rows"]:
+            plain = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", cells)
+            if EXTREME.search(plain) and not table_has_attr:   # 有来源的表里“100%”是数据，不是承诺
+                add("warn", no, "extreme_claim", plain, "表格里有绝对化说法，无依据不要写；改成有条件、有来源的说法")
+            if (not table_has_attr and not HYPOTHETICAL.search(tbl["context"] + plain)
+                    and NUMBER.search(DATE.sub("", plain))):
+                add("warn", no, "unattributed_number", plain,
+                    "表格里的数字没有来源：在表前一句、表头或表后一行写明来源（官方称/据…），或标为假设，或删掉")
 
     titles = list(args.title)
     if args.review:

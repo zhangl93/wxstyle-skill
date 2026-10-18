@@ -59,6 +59,7 @@ python scripts/claim_check.py --title <标题> [--title <标题>]    # 正文还
 - 标出编造的第一人称体验（`first_person_experience`）、正文里的“我没试过”式自我免责（`self_disclaimer`，仅提示复核：必要的未亲测说明可保留，重复免责可合并或改用来源归属）、无来源的具体数字（`unattributed_number`）、绝对化承诺（`extreme_claim`）、无数据的热度说法（`unsupported_heat`）、无来源的评论引语（`unsourced_quote`）、没有数据支撑的概括断言（`unsupported_generalization`，“大多数产品都不会这么写”），以及替作者向读者许下的具体承诺（`author_promise`，“我去跑一遍”“下一篇拆给你看”）。
 - 作者提供了真实实测记录才加 `--hands-on`；否则第一人称体验一律当待办处理：删掉、改成资料转述，或向作者要记录。
 - 标题不在正文里，而在 review.md 的“标题候选”，所以要加 `--review` 一并检查标题（绝对化用词、热度词、标题党用语、没有归因的数字）；也可以用 `--title` 单独传。
+- 表格里的数字也查：按整张表判断归因（表前一段、表头、表格本身、表后一行，比如“数据来源：官方定价页”），所以表格数据的来源写在这几处之一。
 - 只查表面写法，零疑点不代表内容真实，仍要对照来源核对。
 
 ### similarity_check：相似度

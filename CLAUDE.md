@@ -8,11 +8,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Layout follows the `npx skills add` convention:
 - Repo root (`README.md`, `CONTRIBUTING.md`, `CHANGELOG.md`, `LICENSE`, `examples/`) is for humans.
-- `skills/wxstyle/` is the skill itself. `SKILL.md` is the entry point the model reads. `references/*.md` are loaded on demand from links in SKILL.md and are written for the model, not as human architecture docs. `scripts/` holds the mechanical checks. `profiles/` holds style profiles. `evals/` holds tests.
+- `skills/wxstyle/` is the skill itself. `SKILL.md` is the entry point the model reads. `references/*.md` are loaded on demand from links in SKILL.md and are written for the model, not as human architecture docs (e.g. `topic-selection.md` = topic discovery, `evidence-and-delivery.md` = sources and tools, `style-profile-schema.md` = profile analysis). `scripts/` holds the mechanical checks. `profiles/` holds style profiles. `evals/` holds tests.
 
 ## Commands
 
-Python 3.10+ with only the standard library (`make_cover_card.py` and its tests need Pillow).
+Python 3.10+ with only the standard library (`make_cover_card.py` and its tests need Pillow). No build, formatter or linter is configured.
 
 ```bash
 # Full test suite (the one hard requirement before a PR)
@@ -37,8 +37,8 @@ Script usage (flags, how to read the output) is documented in the README script 
 - **Docs-contract tests**: most of `test_skill_docs_contract.py` asserts that certain sentences or links exist in SKILL.md, the references and the README (scoped description, routing table, no `【填：…】` placeholders, and so on). Rewording those docs can break these tests, so check the test before you rephrase. Passing them shows the rule is written down, not that the model follows it. Behavioral evidence lives in the fixture benchmark and `evals/workflow_cases.json` (run manually per `workflow-evaluation.md`).
 - **`test_docs_links.py`** checks relative links in both `skills/wxstyle/SKILL.md` and `README.md`. It distinguishes the skill root from the repo root, because README links point into `skills/wxstyle/...`.
 - **Templates ↔ parsers**: `claim_check.py --review` parses the title table in `references/review-checklist-template.md` (`titles_from_review()`). It once silently checked 0 titles after the template changed while unit tests stayed green (CHANGELOG 1.9.1). When you change a template, a review.md structure or the profile schema, find the scripts that parse it and run them on a real or realistic sample, not just the hand-written fixtures.
-- **Profile schema**: `validate_profile.py` holds the allowed keys; `references/style-profile-schema.md` must document every key (enforced by `ProfileSchemaTests`). Committed profiles are only `profiles/target_*.json`. `profiles/_raw/` (others' original articles) and `profiles/self_*.json` (personal data) are gitignored and must never be committed.
-- **Counts in the README** (trigger-set size 44 = 25 positive + 19 negative, 33 workflow cases, "约 90 条断言" for the fixture benchmark) are kept in sync by hand. Update them when you add cases. Unit-test totals appear only in CHANGELOG entries, not in the README.
+- **Profile schema**: `validate_profile.py` holds the allowed keys; `references/style-profile-schema.md` must document every key (enforced by `ProfileSchemaTests`). Committed profiles are only `profiles/target_*.json`. `profiles/_raw/` (others' original articles), `profiles/self_*.json` (personal data) and generated `articles/` are gitignored and must never be committed.
+- **Counts in the README** (trigger-set size 44 = 25 positive + 19 negative, 45 workflow cases, "约 90 条断言" for the fixture benchmark) are kept in sync by hand. Update them when you add cases. Unit-test totals appear only in CHANGELOG entries, not in the README.
 
 ## Versioning and change discipline
 

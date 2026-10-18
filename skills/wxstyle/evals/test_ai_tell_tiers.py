@@ -25,8 +25,16 @@ def cats(data, key="hits"):
 
 
 class StrongWeakTests(unittest.TestCase):
+    def test_normal_rhetoric_is_only_a_weak_signal(self):
+        # 1.23.0：盲评发现这几类压住了正常的修辞和清单写法，单独出现只列为弱信号
+        for text in ("这不是一次升级，而是一场革命。\n", "理解比记忆更关键。\n", "- **速度**：很快\n- **价格**：很低\n- **格式**：固定\n"):
+            data, _ = check(text)
+            self.assertEqual(data["hits"], [], text)
+            self.assertTrue(data["weak_alone"], text)
+
+
     def test_strong_tell_counts_alone(self):
-        data, code = check("这不是一次升级，而是一场革命。\n")
+        data, code = check("总而言之，这是一场革命。\n")
         self.assertEqual(data["hit_count"], 1)
         self.assertEqual(data["hits"][0]["level"], "strong")
         self.assertEqual(code, 1)
@@ -69,7 +77,7 @@ class QuoteSkipTests(unittest.TestCase):
         self.assertEqual(data["hit_count"], 0)
 
     def test_same_text_outside_quotes_is_flagged(self):
-        data, _ = check("这不是升级，而是革命。他说“不同意”。\n")
+        data, _ = check("总而言之，这是革命。他说“不同意”。\n")
         self.assertEqual(data["hit_count"], 1)
 
     def test_book_title_marks_are_skipped(self):
@@ -98,7 +106,7 @@ class StructureTellTests(unittest.TestCase):
 
     def test_bold_labels_in_a_list(self):
         data, _ = check("- **速度**：很快\n- **价格**：很低\n- **格式**：固定\n")
-        self.assertIn("bold_labels", cats(data))
+        self.assertIn("bold_labels", cats(data) + cats(data, "weak_alone"))
 
     def test_plain_labels_in_a_list_are_fine(self):
         data, _ = check("- 速度：很快\n- 价格：很低\n- 格式：固定\n")
@@ -145,12 +153,12 @@ class ChineseAiSayingTests(unittest.TestCase):
 
     def test_better_than_any_feature(self):
         data, _ = check("这一点比任何炫酷功能都重要。\n")
-        self.assertIn("comparative_payoff", cats(data))
+        self.assertIn("comparative_payoff", cats(data) + cats(data, "weak_alone"))
 
     def test_bold_lead_paragraphs(self):
         text = "**第一，记录几乎没有门槛。** 打开就是空白页。\n\n**第二，双向链接很克制。** 底部列出谁提到了我。\n\n**第三，本地优先。** 笔记存在自己的设备上。\n"
         data, _ = check(text)
-        self.assertIn("bold_labels", cats(data))
+        self.assertIn("bold_labels", cats(data) + cats(data, "weak_alone"))
 
     def test_bold_inside_a_sentence_is_fine(self):
         data, _ = check("这个功能叫**回声**，过几天会把旧笔记翻出来。另一个叫**标签**，可以手动加。还有一个叫**链接**。\n")
@@ -216,15 +224,15 @@ class ReframeVariantTests(unittest.TestCase):
 
     def test_catches_bu_zhi_shi_variant(self):
         data, _ = check("所以很多时候，我们真正想知道的，不只是AI选了什么，而是它自己到底有多确定。\n")
-        self.assertIn("reframe", cats(data))
+        self.assertIn("reframe", cats(data) + cats(data, "weak_alone"))
 
     def test_catches_bu_zai_yu_variant(self):
         data, _ = check("这对企业来说，意义可能不在于让AI全自动做决定，而在于终于可以画出一条线。\n")
-        self.assertIn("reframe", cats(data))
+        self.assertIn("reframe", cats(data) + cats(data, "weak_alone"))
 
     def test_original_bu_shi_shi_pattern_still_works(self):
         data, _ = check("这不是一次升级，而是一场革命。\n")
-        self.assertIn("reframe", cats(data))
+        self.assertIn("reframe", cats(data) + cats(data, "weak_alone"))
 
 
 class FragmentedParagraphsTests(unittest.TestCase):

@@ -32,8 +32,8 @@ from pathlib import Path
 
 # (类别, 正则, 强弱)
 PHRASE_PATTERNS = [
-    ("reframe", re.compile(r"不是.{1,20}?，(而)?是|不只是.{1,20}?，?而是|不在于.{1,20}?，?而在于"), "strong"),
-    ("comparative_payoff", re.compile(r"比.{1,15}?(更(重要|关键|值钱|有价值)|重要多了|值钱多了)|比任何.{1,12}都(?:重要|关键|有用)"), "strong"),
+    ("reframe", re.compile(r"不是.{1,20}?，(而)?是|不只是.{1,20}?，?而是|不在于.{1,20}?，?而在于"), "weak"),
+    ("comparative_payoff", re.compile(r"比.{1,15}?(更(重要|关键|值钱|有价值)|重要多了|值钱多了)|比任何.{1,12}都(?:重要|关键|有用)"), "weak"),
     ("boilerplate_transition", re.compile(r"总而言之|值得注意的是|不仅(?:仅)?是.{0,15}?更是|与其说.{0,15}?不如说"), "strong"),
     ("grand_opening", re.compile(r"在.{1,12}(的今天|的时代|的浪潮下|的背景下)|随着.{1,20}的(不断)?(发展|普及|进步|深入)"), "strong"),
     ("summary_closer", re.compile(r"综上(?:所述)?[，,：:]|总的来说|希望(这篇|本文|以上|这些).{0,12}(帮助|启发|参考)"), "strong"),
@@ -223,9 +223,9 @@ def analyze(text: str, allow=()) -> dict:
 
     # 加粗小标签列表、加粗密度
     for first_line in list_bold_runs:
-        tells.append({"line": first_line, "category": "bold_labels", "level": "strong", "text": lines[first_line - 1].strip()[:120]})
+        tells.append({"line": first_line, "category": "bold_labels", "level": "weak", "text": lines[first_line - 1].strip()[:120]})
     if len(bold_lead_lines) >= 3 and not list_bold_runs:
-        tells.append({"line": bold_lead_lines[0], "category": "bold_labels", "level": "strong",
+        tells.append({"line": bold_lead_lines[0], "category": "bold_labels", "level": "weak",
                       "text": f"{len(bold_lead_lines)}处以加粗短语开头：{lines[bold_lead_lines[0] - 1].strip()[:60]}"})
     if len(sequence_lines) >= 3:
         tells.append({"line": sequence_lines[0], "category": "sequence_markers", "level": "weak",

@@ -55,7 +55,7 @@ python scripts/claim_check.py --title <标题> [--title <标题>]    # 正文还
 
 ### claim_check：内容真实性
 
-- 标出编造的第一人称体验（`first_person_experience`）、正文里的“我没试过”式自我免责（`self_disclaimer`，改用来源归属的写法）、无来源的具体数字（`unattributed_number`）、绝对化承诺（`extreme_claim`）、无数据的热度说法（`unsupported_heat`）、无来源的评论引语（`unsourced_quote`）、没有数据支撑的概括断言（`unsupported_generalization`，“大多数产品都不会这么写”），以及替作者向读者许下的具体承诺（`author_promise`，“我去跑一遍”“下一篇拆给你看”）。
+- 标出编造的第一人称体验（`first_person_experience`）、正文里的“我没试过”式自我免责（`self_disclaimer`，仅提示复核：必要的未亲测说明可保留，重复免责可合并或改用来源归属）、无来源的具体数字（`unattributed_number`）、绝对化承诺（`extreme_claim`）、无数据的热度说法（`unsupported_heat`）、无来源的评论引语（`unsourced_quote`）、没有数据支撑的概括断言（`unsupported_generalization`，“大多数产品都不会这么写”），以及替作者向读者许下的具体承诺（`author_promise`，“我去跑一遍”“下一篇拆给你看”）。
 - 作者提供了真实实测记录才加 `--hands-on`；否则第一人称体验一律当待办处理：删掉、改成资料转述，或向作者要记录。
 - 标题不在正文里，而在 review.md 的“标题候选”，所以要加 `--review` 一并检查标题（绝对化用词、热度词、标题党用语、没有归因的数字）；也可以用 `--title` 单独传。
 - 只查表面写法，零疑点不代表内容真实，仍要对照来源核对。
@@ -81,7 +81,7 @@ python scripts/claim_check.py --title <标题> [--title <标题>]    # 正文还
 
 ## 找选题
 
-- `python scripts/hot_list.py`：读百度热搜实时榜，输出每条的排名、热度分、摘要和抓取时间，`ai_keyword_hits` 列出摘要或标题里有 AI 相关词的条目。`--file 页面.html` 只解析本地文件，不联网。命中关键词只是初筛（摘要顺带提一句“大模型”、或者“某视频系 AI 生成”这类社会新闻也会命中，但主角不是 AI），热搜不新增候选，只用来给粗筛留下的候选标热度，见 SKILL.md“找选题”。页面里没有数据块（改版、验证页、网络出错）时退出码为 2，不会返回空列表冒充“今天没有热点”。
+- `python scripts/hot_list.py`：读百度热搜实时榜，输出每条的排名、热度分、摘要和抓取时间，`ai_keyword_hits` 列出摘要或标题里有 AI 相关词的条目。`--file 页面.html` 只解析本地文件，不联网。命中关键词只是初筛（摘要顺带提一句“大模型”、或者“某视频系 AI 生成”这类社会新闻也会命中，但主角不是 AI），热搜可提供新线索，但须经定位筛选和来源核实，也用于给已有候选标热度，见 SKILL.md“找选题”。页面里没有数据块（改版、验证页、网络出错）时退出码为 2，不会返回空列表冒充“今天没有热点”。
 
 ## 封面
 

@@ -40,3 +40,17 @@ performance_log只记录用户提供的topic、format（长文/贴图，同一�
 
 保存后运行 python scripts/validate_profile.py <文件>。该脚本检查关键状态约束，不是全部统计字段的完整JSON Schema验证。
 
+
+## 分析与更新流程
+
+先看 profiles/ 里有没有同一账号的画像，有就更新，不新建；账号名用公众号后台显示的名称，栏目或周刊归到所属账号（同一号在不同会话里起了不同文件名，会让样本数和去重对不上）；只分析读到的正文，读不到就说原因，不凭账号名编；图片型文章先逐张转写；数字用 `profile_stats.py` 统计；按来源或内容指纹去重，重复样本不加 sample_count；保存后跑 `validate_profile.py`，用 `render_profile_summary.py` 给用户看摘要。己方没有可靠样本时，用几组同题对比句让作者选，标为 bootstrap。未经作者实质改写的AI稿不算己方样本。
+
+## 选题冷启动
+
+仅找选题、没有历史样本时，账号名已知才建 `profiles/self_{账号名}.json`。
+必填元数据为 `profile_type: "self"`、真实 `account_name`、
+`confidence: "bootstrap"`、`sample_count: 0`；`last_updated` 记录保存日期，
+`generation_method` 说明仅依据用户给出的定位，尚未分析声音样本。
+内容先存 `self_only_fields.positioning` 和顶层 `recent_topics`（无记录用空列表），
+不推测标题、语气等风格字段。保存后运行 `validate_profile.py`。
+账号名未知时暂不落盘，选题仍可继续；后续用户提供账号名再保存。

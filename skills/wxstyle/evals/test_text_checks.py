@@ -50,10 +50,21 @@ class ClaimCheckTests(TempMixin, unittest.TestCase):
         self.assertEqual(got, set())
 
     def test_first_person_disclaimers_are_flagged(self):
-        # 作者要求：正文不写“我没试过”，既然写了文章就用来源归属的写法
+        # 未亲测仍标复核提示，不自动判为必须删除。
         for s in ("我没有实际用过 Jev，下面是根据资料做的判断。", "先交代一句：我还没试过这个功能。",
                   "本文没有包含我自己的实测。", "我没测过，只能转述官方的说法。"):
             self.assertIn("self_disclaimer", self.rules(s + "\n"), s)
+
+    def test_necessary_disclosure_advice_preserves_transparency(self):
+        text = "我没试过这个功能，以下依据官方文档判断。\n"
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "article.md"
+            path.write_text(text, encoding="utf-8")
+            _, data, _ = run("claim_check.py", "--file", path)
+            issue = next(i for i in data["issues"] if i["rule"] == "self_disclaimer")
+            self.assertEqual(issue["level"], "warn")
+            self.assertIn("保留", issue["message"])
+            self.assertNotIn("删掉这句", issue["message"])
 
     def test_source_attributed_sentences_are_not_disclaimers(self):
         for s in ("官方文档写的是，网页端要先登录。", "这个数字是官方自测的，还没有独立复现。", "社区里有人测过，条件见下表。"):

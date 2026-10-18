@@ -558,7 +558,7 @@ def article_quality():
     t = ARTICLE.read_text(encoding="utf-8")
     body = t
     out = []
-    out.append(("不写“我没用过”式自我免责，也不留【填】占位", not re.search(r"我(?:还|从)?没有?(?:实际|亲自)?(?:用过|试过|测过|跑过)|没有包含我自己的|【填", body), "无"))
+    out.append(("不留【填】占位（未亲测说明由审查者判断必要性）", "【填" not in body, "无"))
     out.append(("不编第一人称体验：没有“亲测/实测下来/我用它跑了”", not re.search(r"亲测|实测下来|我用它跑|我测试了|我试了", body), "无"))
     plines = [l for l in body.splitlines() if l.strip()]
     nums, unattributed = [], []

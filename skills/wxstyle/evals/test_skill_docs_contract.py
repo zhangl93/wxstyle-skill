@@ -43,10 +43,13 @@ class SkillMdTests(unittest.TestCase):
         self.assertIn("/wxstyle", desc)
 
     def test_rewrite_may_add_source_limits_but_must_list_them(self):
-        # 1.21.0：改稿考试里，重新核对原文补上的限定（如“中文效果不如英文”）和“不新增事实”冲突
+        # 核对补限定和授权深改均可新增，但不得冒改作者立场。
         d = skill_md()
         self.assertIn("重新核对原文时发现原稿漏掉的限定", d)
-        self.assertIn("不新增原稿没有的例子、角度和论点", d)
+        route = next(line for line in d.splitlines() if "`rewrite` /" in line)
+        self.assertRegex(route, r"默认.*忠实润色")
+        self.assertRegex(route, r"用户.*(?:深改|加强论证).*允许新增.*来源")
+        self.assertIn("不替作者改变立场", route)
 
     def test_log_adds_published_topics_for_dedupe(self):
         # 1.22.0：log 考试发现不是本 skill 写的已发布文章不在 recent_topics，找选题去不了重
@@ -85,8 +88,8 @@ class SkillMdTests(unittest.TestCase):
         for word in ("打不开", "查不到", "冲突", "未运行"):
             self.assertIn(word, text)
 
-    def test_edit_route_forbids_adding_or_dropping_facts(self):
-        # 1.21.0 起：不丢原有事实；不新增例子、角度、论点；核对原文补的限定要列成“新增”
+    def test_edit_route_preserves_facts_and_records_additions(self):
+        # 忠实润色保留原意，授权深改的新增内容仍需记录。
         d = skill_md()
         self.assertIn("不丢原有的事实、数字、归因", d)
         self.assertIn("列成“新增”", d)
@@ -186,7 +189,7 @@ class EngagementGuidanceTests(unittest.TestCase):
 
     def test_guidance_has_criteria_and_examples(self):
         d = self.doc()
-        for word in ("好回答", "自己的经历", "不问表态", "差：", "好："):
+        for word in ("好回答", "自己的经历", "避免空泛表态", "差：", "好："):
             self.assertIn(word, d)
 
     def test_guidance_does_not_promise_on_behalf_of_the_author(self):
@@ -233,7 +236,7 @@ class CaveatScopeAndListCountTests(unittest.TestCase):
 
 
 class NoPlaceholderNoDisclaimerTests(unittest.TestCase):
-    """作者要求：正文不留【填】占位，没数据就删段；正文不写“我没试过”，也不编“我试了”。"""
+    """正文不留占位，不编实测；必要的未亲测说明可以保留。"""
 
     def test_skill_no_longer_tells_writers_to_leave_fill_in_placeholders(self):
         text = skill_md()
@@ -242,9 +245,11 @@ class NoPlaceholderNoDisclaimerTests(unittest.TestCase):
         self.assertIn("正文里不留 `【填：…】`", text)
         self.assertIn("没有数据就删掉这段", text)
 
-    def test_skill_bans_first_person_disclaimers_but_keeps_the_no_fabrication_rule(self):
+    def test_skill_allows_necessary_disclosure_but_keeps_no_fabrication(self):
         text = skill_md()
-        self.assertIn("不写“我没用过”“我没试过”", text)
+        evidence = text.split("## 证据规则", 1)[1].split("## 输出", 1)[0]
+        self.assertRegex(evidence, r"是否亲测.*影响.*可以.*说明")
+        self.assertNotIn("正文不写“我没用过”", evidence)
         self.assertIn("只有作者给了记录才能写“我测了”", text)
 
     def test_source_voice_is_explained(self):
@@ -391,34 +396,18 @@ class ExplainerStructureTests(unittest.TestCase):
         self.assertIn("反常识", d)
         self.assertIn("证据只支持一个平常的判断", d)
 
-    def test_concrete_case_step_forbids_fabrication_when_no_material(self):
+    def test_concrete_case_allows_teaching_examples_but_not_fake_results(self):
         d = self.doc()
         self.assertIn("没有真实材料", d)
-        self.assertIn("不能为了填这一步", d)
+        case = next(line for line in d.splitlines() if "**③ 具体案例**" in line)
+        self.assertRegex(case, r"没有真实材料.*可以构造.*教学示例")
+        self.assertIn("非真实返回", case)
+        self.assertRegex(case, r"不能.*冒充.*实测结果")
 
     def test_keeps_the_mnemonic_for_memorability(self):
         d = self.doc()
         self.assertIn("标题卖问题", d)
         self.assertIn("案例卖可信度", d)
-
-
-class CoverToolPathTests(unittest.TestCase):
-    """tools-guide.md 在 1.11.0 删掉了（验证次数低），唯一验证过的路径并进了 title-and-cover.md。"""
-
-    def test_verified_cover_path_kept_in_title_and_cover(self):
-        d = (ROOT / "references" / "title-and-cover.md").read_text(encoding="utf-8")
-        for word in ("ChatGPT", "make_cover_card.py", "唯一真正验证过的路径", "只在一个工具里改"):
-            self.assertIn(word, d)
-
-
-class CoverRealSceneTests(unittest.TestCase):
-    """1.15.0：作者要求生图提示词尽量在真实场景中构图，不默认用抽象的编辑示意图。"""
-
-    def test_prompt_template_asks_for_a_real_scene(self):
-        d = (ROOT / "references" / "title-and-cover.md").read_text(encoding="utf-8")
-        self.assertIn("生图先从真实场景构图", d)
-        self.assertIn("场景：[", d)
-        self.assertIn("要有人在做事", d)
 
 
 class IndependentReviewTests(unittest.TestCase):
@@ -446,11 +435,13 @@ class IndependentReviewTests(unittest.TestCase):
     def test_unverified_core_action_is_must_fix_and_cannot_be_waved_off(self):
         d = (ROOT / "references" / "editorial-checks.md").read_text(encoding="utf-8")
         self.assertIn("关键一步没核实", d)
-        self.assertIn("不能自己把“必须改”降成“建议改”", d)
+        self.assertRegex(d, r"事实错误.*不能.*偏好降级")
+        self.assertRegex(d, r"原文依据.*误判.*记录证据")
         self.assertIn("从读者角度把全文通读一遍", d)
 
     def test_topic_candidates_estimate_affected_readers(self):
-        self.assertIn("目标读者里大概多少人会受影响", skill_md())
+        self.assertIn("references/topic-selection.md", skill_md())
+        self.assertIn("目标读者里大概多少人会受影响", (ROOT / "references" / "topic-selection.md").read_text(encoding="utf-8"))
 
     def test_review_template_records_it(self):
         tpl = (ROOT / "references" / "review-checklist-template.md").read_text(encoding="utf-8")

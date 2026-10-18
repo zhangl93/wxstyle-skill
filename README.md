@@ -25,7 +25,7 @@
 - **核实**：正文只写有来源的内容；没测过就不写"实测"；作者编的例子必须标明。
 - **配图**：优先真实素材（官网截图、真实界面、有上下文的评论），没有就如实标"待补"，不用无关插图或假界面凑数。
 - **标题与封面**：标题的三问和写法、封面方案（文字卡、界面截图裁切、生图）和尺寸，见 [title-and-cover.md](skills/wxstyle/references/title-and-cover.md)。
-- **封面保底**：没有封面图时用 `make_cover_card.py` 生成文字卡；想要生图封面，就把提示词交给 ChatGPT，生成后回来裁切。
+- **封面保底**：没有封面图时用 `make_cover_card.py` 生成文字卡；要生图且当前有工具时直接生成；只要提示词或工具不可用时提供提示词。摄影、插画、信息图等表现方式按主题选择，不默认禁用logo、界面或文字。
 - **写回画像、记数据**：交付后把这篇记进己方画像；发布后告诉它阅读数，记进 `performance_log`。
 - **结尾问题**：给出读者凭自己经历就能答的具体问题候选，让留言有理由发生（见 [engagement.md](skills/wxstyle/references/engagement.md)）。
 - **排版**：按 Markdown 转公众号工具的语法输出，并做机械检查。
@@ -111,7 +111,7 @@ python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 |---|---|---|
 | `/wxstyle topics` | 今天有什么值得写 | 找选题：给 3 个带信息差和原文链接的候选 |
 | `/wxstyle write` | 写一篇…… | 资料核实、标题、正文、机械检查、独立审查，交付文章目录 |
-| `/wxstyle rewrite` | 改改这篇 | 改结构和表达，不新增、不丢原稿的事实 |
+| `/wxstyle rewrite` | 改改这篇 | 默认忠实润色；授权深改可补有依据的内容，新增项单独记录 |
 | `/wxstyle titles` | 给这篇起几个标题 | 只出 3—5 个标题候选 |
 | `/wxstyle review` | 看看能不能发 | 机械检查加独立审查，写 review.md |
 | `/wxstyle prep` | 帮这篇配图排版 | 真实截图优先的配图、排版 |
@@ -123,7 +123,7 @@ python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 
 ## 一篇文章的产物
 
-每篇文章放在自己的目录里。没指定位置时，默认是当前项目下的 `articles/日期-主题/`，不放进 skill 目录：
+完整成稿放在自己的目录里；只改句子、局部段落或只要标题时，直接交付所需内容，不强制创建目录、封面或整稿审核。没指定位置时，默认是当前项目下的 `articles/日期-主题/`，不放进 skill 目录：
 
 | 文件 | 内容 |
 |---|---|
@@ -133,7 +133,7 @@ python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 | `delivery.json` | 文字、配图、审核三项状态，以及正文和已审核版本的哈希 |
 | `images/` | 图片，含文字卡封面 `cover-card.png`；本地路径只用于预览，发布时要在后台重新上传 |
 
-正文里不留 `【填：…】` 占位符，也不写“我没用过”：没有数据的部分整段删掉，没有实测就用“官方文档写的是……”这类来源归属的写法。你有真实的实测或评论，发给我，我再加进正文。
+正文里不留 `【填：…】` 占位符：没有数据的部分删掉或缩小结论，没有实测默认用来源归属；是否亲测影响读者判断时，可以简短说明未亲测和证据范围。你有真实的实测或评论，发给我，我再加进正文。
 
 ## 画像
 
@@ -178,7 +178,7 @@ python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 - `evals/test_*.py`：脚本的回归测试。
 - `evals/eval_set.json`：测 skill 是否被正确触发，44 条请求（25 条该触发、19 条不该触发，含小红书、翻译、技术博客等相近的反例，以及”推送””公号稿”这类简短说法）。
 - `evals/fixture_benchmark/run.py`：夹具评测，约 90 条断言，检查脚本该报的报出来、不该报的不报，含没参与调规则的留出集。改脚本后运行 `python skills/wxstyle/evals/fixture_benchmark/run.py`，用 `--skill <旧版目录>` 可以和旧版做对比；需要 `profiles/_raw/target_阮一峰` 作语料。
-- `evals/workflow_cases.json`：33 个行为用例，执行方法见 [workflow-evaluation.md](skills/wxstyle/evals/workflow-evaluation.md)；脚本测试不能代替它。
+- `evals/workflow_cases.json`：45 个行为用例，执行方法见 [workflow-evaluation.md](skills/wxstyle/evals/workflow-evaluation.md)；脚本测试不能代替它。
 
 ## 目录
 
@@ -187,7 +187,7 @@ README.md, LICENSE, CONTRIBUTING.md, CHANGELOG.md   给人看的文档，仓库�
 examples/                                            真实产出示例
 skills/wxstyle/         skill 本体（npx skills add 按这个约定寻找）
   SKILL.md              给 Claude 的主说明
-  references/           画像 schema、素材与交付、标题与封面、封面测试、结尾问题、机制讲解结构、配图规则、排版规则、改稿复核、检查脚本说明、审核模板
+  references/           选题流程、画像 schema、素材与交付、标题与封面、封面测试、结尾问题、机制讲解结构、配图规则、排版规则、改稿复核、检查脚本说明、审核模板
   scripts/               上面的检查脚本
   profiles/              画像和原文缓存
   evals/                 触发评测、行为评测、回归测试

@@ -24,8 +24,8 @@
 - **仿写**：学结构和节奏，不学句子；语气和立场用作者自己的画像，不冒用对标作者的署名和口头禅。
 - **核实**：正文只写有来源的内容；没测过就不写"实测"；作者编的例子必须标明。
 - **配图**：优先真实素材（官网截图、真实界面、有上下文的评论），没有就如实标"待补"，不用无关插图或假界面凑数。
-- **标题与封面**：标题的三问和写法、封面方案（文字卡、界面截图裁切、生图）和尺寸，见 [title-and-cover.md](skills/wxstyle/references/title-and-cover.md)。
-- **封面保底**：没有封面图时用 `make_cover_card.py` 生成文字卡；要生图且当前有工具时直接生成；只要提示词或工具不可用时提供提示词。摄影、插画、信息图等表现方式按主题选择，不默认禁用logo、界面或文字。
+- **标题与封面**：标题的三问和写法、封面方案和尺寸，见 [title-and-cover.md](skills/wxstyle/references/title-and-cover.md)。
+- **封面提示词**：不生成图片，只给一份能直接粘贴到 ChatGPT 等生图工具的提示词，图由作者自己生成、在后台裁切。
 - **写回画像、记数据**：交付后把这篇记进己方画像；发布后告诉它阅读数，记进 `performance_log`。
 - **结尾问题**：给出读者凭自己经历就能答的具体问题候选，让留言有理由发生（见 [engagement.md](skills/wxstyle/references/engagement.md)）。
 - **排版**：按 Markdown 转公众号工具的语法输出，并做机械检查。
@@ -35,7 +35,7 @@
 
 ## 安装
 
-Python 3.10+，标准库即可（可选的封面文字卡脚本 `make_cover_card.py` 需要 Pillow）。
+Python 3.10+，标准库即可。
 
 **Claude Code、Codex 等**：用 [`skills`](https://github.com/vercel-labs/skills) 这个跨 agent 的技能安装工具，一条命令装到共用目录，两边都能用：
 
@@ -131,7 +131,7 @@ python -m unittest discover -s skills/wxstyle/evals -p "test_*.py"
 | `review.md` | 标题候选、摘要、主张表（含原文措辞）、质量复核（独立审查者打分）、机械检查结果、待办 |
 | `sources.md` | 完整链接和核对日期（正文里只保留来源名） |
 | `delivery.json` | 文字、配图、审核三项状态，以及正文和已审核版本的哈希 |
-| `images/` | 图片，含文字卡封面 `cover-card.png`；本地路径只用于预览，发布时要在后台重新上传 |
+| `images/` | 作者要了配图时才有；本地路径只用于预览，发布时要在后台重新上传 |
 
 正文里不留 `【填：…】` 占位符：没有数据的部分删掉或缩小结论，没有实测默认用来源归属；是否亲测影响读者判断时，可以简短说明未亲测和证据范围。你有真实的实测或评论，发给我，我再加进正文。
 
@@ -160,7 +160,6 @@ skills/wxstyle/profiles/
 | `ai_tell_check.py` | `--file article.md [--allow 类别]` | AI 套话句式和结构：强信号见一次就计入，弱信号单独出现只列出、附近有别的信号才计入；不检查引用和代码；还查聊天残留、“标志着新篇章”式拔高、正文整体缺具体细节，以及“没有统一答案”“欢迎在评论区”这类套路框架；结构上查连续同开头、加粗小标签列表、每节一句话收尾、emoji 标题、“写在最后”式模板小标题 |
 | `similarity_check.py` | `--generated article.md --reference skills/wxstyle/profiles/_raw/target_xxx` | N-gram 相似度、连续重合、近似句 |
 | `claim_check.py` | `[--file article.md] [--hands-on] [--review review.md] [--title 标题]`（只查标题时可以不给 `--file`） | 编造的第一人称体验、无来源数字、绝对化承诺、无数据的热度说法、无来源评论引语、替作者许下的承诺、无数据支撑的概括断言（“大多数产品都不会”）；加 `--review` 或 `--title` 时也检查标题（绝对化、热度词、标题党、无归因数字） |
-| `make_cover_card.py` | `--big 85% --small 官方示例 --out images/cover-card.png`，或 `--bg 图片 --out ...` | 生成封面文字卡（900×383），或把 ChatGPT 生成的图裁成封面并可叠字；限制字数，保证字在转发裁切的中间 1:1 内，输出裁切预览。需要 Pillow |
 | `hot_list.py` | `[--file 页面.html]` | 读百度热搜实时榜：排名、热度分、摘要、抓取时间，标出含 AI 相关词的条目（只是初筛）；读不到就退出码 2，不返回空列表 |
 | `check_delivery.py` | `<文章目录> [--profile 己方画像]` | 交付文件、哈希和素材清单是否一致；有没有封面图；加 `--profile` 时查这篇是否已写回画像 |
 | `validate_profile.py` | `skills/wxstyle/profiles/*.json` | 画像结构，以及样本数与 `_raw` 缓存、置信度是否一致 |

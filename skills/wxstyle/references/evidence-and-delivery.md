@@ -14,7 +14,7 @@
 
 先同步article.md再交付。审核记录article_sha256；正文变化则审核失效，不能只刷新哈希不复核。UTF-8保存。
 
-完整成稿每篇都建 delivery.json（局部表达或标题任务不建）（封面保底让每篇都有图片目录，`check_delivery.py` 也要读它）：
+完整成稿每篇都建 delivery.json（局部表达或标题任务不建；`check_delivery.py` 要读它）；images/ 只在作者要了配图时才建：
 
 ```json
 {

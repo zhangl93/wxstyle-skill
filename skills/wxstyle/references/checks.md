@@ -73,7 +73,7 @@ python scripts/claim_check.py --title <标题> [--title <标题>]    # 正文还
 ## 交付阶段
 
 - `python scripts/check_layout.py --file article.md`：排版语法。error 必须处理，warn 人工判断，pending（占位符、本地图片）写入待办。输出的 `stats.body_chars` 是正文字数，报字数用它，不用按字节计的 `wc -c`（中文会被放大约3倍）。
-- `python scripts/check_delivery.py <文章目录> [--profile <己方画像>]`：核对文件、哈希和素材清单，以及封面保底、画像写回两项交付收尾，不代替事实或视觉审核。
+- `python scripts/check_delivery.py <文章目录> [--profile <己方画像>]`：核对文件、哈希和素材清单，以及封面提示词、画像写回两项交付收尾，不代替事实或视觉审核。
 
 ## 画像阶段
 
@@ -85,6 +85,3 @@ python scripts/claim_check.py --title <标题> [--title <标题>]    # 正文还
 
 - `python scripts/hot_list.py`：读百度热搜实时榜，输出每条的排名、热度分、摘要和抓取时间，`ai_keyword_hits` 列出摘要或标题里有 AI 相关词的条目。`--file 页面.html` 只解析本地文件，不联网。命中关键词只是初筛（摘要顺带提一句“大模型”、或者“某视频系 AI 生成”这类社会新闻也会命中，但主角不是 AI），热搜可提供新线索，但须经定位筛选和来源核实，也用于给已有候选标热度，见 SKILL.md“找选题”。页面里没有数据块（改版、验证页、网络出错）时退出码为 2，不会返回空列表冒充“今天没有热点”。
 
-## 封面
-
-- `python scripts/make_cover_card.py --big 85% --small 官方示例 --out images/cover-card.png`：生成封面文字卡（900×383），输出中间 1:1 的裁切预览。`--bg 图片路径` 把 ChatGPT 等生成的无字插画居中裁成封面尺寸，可再叠字。封面字合计超过10个、大字放不进安全区会报错。需要 Pillow（`pip install pillow`），其余脚本不需要；字体按系统自动找（Windows 微软雅黑、macOS 冬青黑体、Linux Noto Sans CJK 或文泉驿正黑），都找不到时用 `--font-bold`、`--font` 指定。生成后要看图，尤其是裁切预览。

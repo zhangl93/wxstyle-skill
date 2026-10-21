@@ -2,7 +2,7 @@
 """只读检查图文文件一致性；不替代事实、版权或视觉审核。
 
 另外两项交付收尾（SKILL.md“输出”）也在这里查，因为光写在文档里，真实运行时会被跳过：
-- 封面保底：images/ 下要有文件名含 cover 的图（make_cover_card.py 的裁切预览以“_”开头、生图原图文件名含 raw，都不算）。
+- 封面提示词：skill 不生成封面图，review.md 里要有“封面提示词”和一个写了内容的代码块（模板占位“（在这里写提示词）”不算）。
 - 写回画像：加 --profile 时，查己方画像 article_history 里有没有这篇（article_id 用文章目录名），
   status 是不是 delivered 或 published。
 - 独立审查和主张表：review.md 里要有“## 独立审查”一节且表里至少一行（或写明“沿用上次独立审查”），
@@ -25,17 +25,19 @@ def image_targets(text):
     return re.findall(r'!\[[^\]]*\]\(\s*(<[^>]+>|[^\s)]+)(?:\s+"[^"]*")?\s*\)', text)
 
 
-IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp"}
+PROMPT_PLACEHOLDER = "（在这里写提示词）"
 
 
-def find_cover(directory):
-    images = directory / "images"
-    if not images.is_dir():
-        return None
-    for p in sorted(images.iterdir()):
-        if p.is_file() and p.suffix.lower() in IMAGE_EXT and "cover" in p.name.lower() and "raw" not in p.name.lower() and not p.name.startswith("_"):
-            return p.relative_to(directory).as_posix()
-    return None
+def has_cover_prompt(directory):
+    review = directory / "review.md"
+    if not review.is_file():
+        return False
+    text = review.read_text(encoding="utf-8-sig")
+    i = text.find("封面提示词")
+    if i < 0:
+        return False
+    m = re.search(r"```[^\n]*\n(.*?)```", text[i:], re.S)
+    return bool(m and m.group(1).strip() and PROMPT_PLACEHOLDER not in m.group(1))
 
 
 def profile_status(profile, article_id):
@@ -149,9 +151,9 @@ def audit(directory, profile=None):
         errors.append("图片待补但缺少待办")
     if data.get("review_status") != "complete":
         warnings.append("编辑审核未完成")
-    cover = find_cover(directory)
-    if not cover:
-        warnings.append("没有封面图（images/ 下文件名含 cover）：按 SKILL.md“输出”用 make_cover_card.py 做文字卡保底")
+    cover_prompt = has_cover_prompt(directory)
+    if not cover_prompt:
+        warnings.append("review.md 里没有封面提示词：按 SKILL.md“输出”在“标题与封面”写一份可直接粘贴的生图提示词")
     written_back = None
     if profile:
         status = profile_status(profile, directory.resolve().name)
@@ -162,10 +164,10 @@ def audit(directory, profile=None):
             warnings.append(f"己方画像里这篇的 status 是 {status}，交付后应为 delivered")
     gaps = review_gaps(directory)
     warnings.extend(gaps)
-    ready = (not errors and not pending and cover is not None and written_back is not False and not gaps and data.get("text_status") == "complete"
+    ready = (not errors and not pending and cover_prompt and written_back is not False and not gaps and data.get("text_status") == "complete"
              and data.get("visual_status") in {"complete", "not_requested"}
              and data.get("review_status") == "complete")
-    return {"article_sha256": digest, "image_count": len(targets), "cover": cover,
+    return {"article_sha256": digest, "image_count": len(targets), "cover_prompt": cover_prompt,
             "profile_written_back": written_back, "errors": errors,
             "warnings": warnings, "pending_items": pending, "structural_pass": not errors,
             "ready_for_delivery": ready, "limitation": "不验证线上事实、截图真伪、授权或视觉质量"}

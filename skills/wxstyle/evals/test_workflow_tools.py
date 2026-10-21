@@ -80,7 +80,8 @@ class SimilarityTests(unittest.TestCase):
 
 
 CLAIMS_OK = "## 主张表\n\n| 主张 | 类别 |\n|---|---|\n| 某数字 | 官方主张 |\n"
-REVIEW_OK = ("## 独立审查\n\n| 问题 | 级别 | 原文依据 | 处理 |\n|---|---|---|---|\n"
+COVER_OK = "## 标题与封面\n\n封面提示词：\n\n```text\n用途：公众号文章封面。\n```\n\n"
+REVIEW_OK = (COVER_OK + "## 独立审查\n\n| 问题 | 级别 | 原文依据 | 处理 |\n|---|---|---|---|\n"
              "| 漏了限定 | 必须改 | 原句 | 已改 |\n\n" + CLAIMS_OK)
 
 
@@ -91,8 +92,6 @@ class DeliveryTests(unittest.TestCase):
         self.root = Path(self.tmp.name)
         self.article = self.root / "article.md"
         self.article.write_text("# Title\n\nArticle.", encoding="utf-8")
-        (self.root / "images").mkdir()
-        (self.root / "images" / "cover-card.png").write_bytes(b"cover")
         self.review = self.root / "review.md"
         self.review.write_text(REVIEW_OK, encoding="utf-8")
         digest = delivery.file_hash(self.article)
@@ -140,15 +139,19 @@ class DeliveryTests(unittest.TestCase):
             self.assertFalse(self.run_audit()["structural_pass"])
 
 
-    def test_missing_cover_blocks_ready_but_not_structure(self):
-        (self.root / "images" / "cover-card.png").unlink()
-        (self.root / "images" / "_cover-card-square-preview.png").write_bytes(b"preview")
-        (self.root / "images" / "cover-raw.png").write_bytes(b"uncropped generated image")
+    def test_missing_cover_prompt_blocks_ready_but_not_structure(self):
+        # 只有模板占位、没有提示词内容的不算
+        self.review.write_text(REVIEW_OK.replace("用途：公众号文章封面。", "（在这里写提示词）"), encoding="utf-8")
         result = self.run_audit()
         self.assertTrue(result["structural_pass"])
         self.assertFalse(result["ready_for_delivery"])
-        self.assertIsNone(result["cover"])
-        self.assertTrue(any("封面" in w for w in result["warnings"]))
+        self.assertFalse(result["cover_prompt"])
+        self.assertTrue(any("封面提示词" in w for w in result["warnings"]))
+
+    def test_no_images_dir_needed(self):
+        result = self.run_audit()
+        self.assertFalse((self.root / "images").exists())
+        self.assertTrue(result["ready_for_delivery"])
 
     def test_missing_independent_review_blocks_ready(self):
         self.review.write_text(CLAIMS_OK, encoding="utf-8")
@@ -165,7 +168,7 @@ class DeliveryTests(unittest.TestCase):
         self.assertTrue(any("主张表" in w for w in warnings))
 
     def test_reused_review_note_counts(self):
-        self.review.write_text("## 独立审查\n\n改动未涉及事实，沿用上次独立审查。\n\n" + CLAIMS_OK, encoding="utf-8")
+        self.review.write_text(COVER_OK + "## 独立审查\n\n改动未涉及事实，沿用上次独立审查。\n\n" + CLAIMS_OK, encoding="utf-8")
         self.assertTrue(self.run_audit()["ready_for_delivery"])
 
     def audit_with_profile(self, status):

@@ -504,10 +504,33 @@ class ReviewAndDeliveryLoopTests(unittest.TestCase):
         self.assertIn("记一下数据", skill_md())
         self.assertIn("performance_log", skill_md())
 
-    def test_cover_has_a_text_card_fallback(self):
+    def test_cover_is_delivered_as_a_prompt(self):
+        # 1.27.0：作者反馈生成的图效果不好，只交付封面提示词，不生图、不做文字卡
         text = skill_md()
-        self.assertIn("封面保底", text)
-        self.assertIn("cover-card.png", text)
+        self.assertIn("封面只给提示词", text)
+        self.assertNotIn("cover-card.png", text)
+        d = (ROOT / "references" / "title-and-cover.md").read_text(encoding="utf-8")
+        self.assertIn("skill 只交付提示词", d)
+
+    def test_cover_script_is_gone(self):
+        self.assertFalse((ROOT / "scripts" / "make_cover_card.py").exists())
+        for doc in [ROOT / "SKILL.md", *sorted((ROOT / "references").glob("*.md"))]:
+            self.assertNotIn("make_cover_card", doc.read_text(encoding="utf-8"), doc.name)
+
+    def test_topics_widen_window_and_include_deepseek(self):
+        # 1.27.0：10-21 找选题时 1—3 天内几乎没有官方更新，产品清单里也没有 DeepSeek，漏掉了 V4.1-Flash-1017
+        d = (ROOT / "references" / "topic-selection.md").read_text(encoding="utf-8")
+        self.assertIn("凑不够3个就放宽到7天", d)
+        self.assertIn("DeepSeek", d)
+
+    def test_reader_steps_are_walked_through(self):
+        # 1.27.0：DeepSeek 稿的三步漏了“保存类型选所有文件”，读者会存成 .txt
+        self.assertIn("按读者手边的设备和默认设置从头走一遍", skill_md())
+        d = (ROOT / "references" / "editorial-checks.md").read_text(encoding="utf-8")
+        self.assertIn("按读者手边的设备和默认设置从头走一遍", d)
+
+    def test_judgement_labels_are_not_everywhere(self):
+        self.assertIn("全文两三处就够", skill_md())
 
 
 class CoverPromptTests(unittest.TestCase):

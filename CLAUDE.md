@@ -12,7 +12,7 @@ Layout follows the `npx skills add` convention:
 
 ## Commands
 
-Python 3.10+ with only the standard library (`make_cover_card.py` and its tests need Pillow). No build, formatter or linter is configured.
+Python 3.10+ with only the standard library. No build, formatter or linter is configured.
 
 ```bash
 # Full test suite (the one hard requirement before a PR)
@@ -27,7 +27,7 @@ cd skills/wxstyle/evals && python -m unittest test_skill_docs_contract.AiTellRul
 python skills/wxstyle/evals/fixture_benchmark/run.py
 ```
 
-`make_cover_card.py` picks a Simplified Chinese font per OS from `BOLD_CANDIDATES` / `REGULAR_CANDIDATES`, which pair each path with a `.ttc` face index (some collections put Traditional Chinese or Japanese at index 0). If no candidate exists it exits 2; pass `--font-bold` / `--font` (face index 0) to override.
+Covers are delivered as an image-generation prompt in review.md only. The skill does not generate images (the author found the results poor; `make_cover_card.py` was removed in 1.27.0), and `check_delivery.py` checks for a filled-in cover prompt instead of a cover file.
 
 Script usage (flags, how to read the output) is documented in the README script table and in `references/checks.md`. All scripts print JSON and take file paths as passed, relative to the cwd. Only the tests and `fixture_benchmark/run.py` locate the skill through `Path(__file__).resolve().parents[N]`.
 

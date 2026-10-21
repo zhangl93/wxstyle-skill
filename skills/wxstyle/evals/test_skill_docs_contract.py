@@ -529,6 +529,13 @@ class ReviewAndDeliveryLoopTests(unittest.TestCase):
         d = (ROOT / "references" / "editorial-checks.md").read_text(encoding="utf-8")
         self.assertIn("按读者手边的设备和默认设置从头走一遍", d)
 
+    def test_positioning_example_matches_the_rule(self):
+        # 1.28.0：规则前半句说“今天能直接用”不是所有文章的准入条件，示例却还在问“今天能不能用上”，两者矛盾
+        d = (ROOT / "references" / "topic-selection.md").read_text(encoding="utf-8")
+        self.assertNotIn("今天能不能在网页或 App 里用上", d)
+        self.assertIn("会不会改变读者花的钱、用的时间或手里 AI 工具的用法", d)
+        self.assertIn("需要换成读者角度", d)
+
     def test_judgement_labels_are_not_everywhere(self):
         self.assertIn("全文两三处就够", skill_md())
 
